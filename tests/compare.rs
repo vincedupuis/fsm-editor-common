@@ -1,5 +1,6 @@
 //! Comparing and merging against `fixtures/compare.json`: pairs of machines with what the editors' reference gave
-//! (written by the umbrella repo's `parity/common-fixtures.mjs`).
+//! (written once, before the move, by running the VS Code edition's TypeScript `compare.ts` and `merge.ts` on the examples,
+//! fsm-cli's cases and the converted old examples, each with deterministic edits).
 
 use fsm_editor_common::compare::{compare_models, describe_change, is_model_change};
 use fsm_editor_common::merge::{adopt, has_conflict_markers, split_conflicts};

@@ -317,6 +317,11 @@
         },
         "result": { "type": "array", "items": { "$ref": "#/$defs/change" } }
       },
+      "keys": {
+        "description": "The id of each element by its key (as in `compare`), the machine's ('machine') being ''.",
+        "args": { "type": "object", "required": ["model"], "properties": { "model": { "$ref": "#/$defs/model" } }, "additionalProperties": false },
+        "result": { "type": "object", "additionalProperties": { "type": "string" } }
+      },
       "splitConflicts": {
         "args": { "$ref": "#/$defs/text" },
         "result": {

@@ -12,7 +12,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::value::RawValue;
 use serde_json::{Value, json};
 
-use crate::compare::{compare_models, describe_change, is_model_change};
+use crate::compare::{compare_models, describe_change, is_model_change, items_of};
 use crate::convert::{ConvertInput, convert_group};
 use crate::format::{
     apply_layout, assign_names, derived_ids, is_old_format, read_machine, read_model, resolve_references, write_machine,
@@ -200,8 +200,11 @@ fn run(function: &str, a: Args) -> Result<String, String> {
                 Err(e) => json!({ "error": e }),
             }
         }
+        // Of the model as written: generated names given first.
         "derivedIds" => {
-            let model = args::<ModelArg>(a)?.model;
+            let mut model = args::<ModelArg>(a)?.model;
+            normalize_model(&mut model);
+            assign_names(&mut model, false);
             json!(derived_ids(&model, None).into_iter().collect::<BTreeMap<_, _>>())
         }
         "convert" => json!(convert_group(&args::<ConvertArgs>(a)?.inputs)),
@@ -227,6 +230,13 @@ fn run(function: &str, a: Args) -> Result<String, String> {
                 })
                 .collect();
             json!(changes)
+        }
+        // The id of each element by its key (see `compare`): what matches an element across versions.
+        "keys" => {
+            let model = args::<ModelArg>(a)?.model;
+            let keys: serde_json::Map<String, Value> =
+                items_of(&model).into_iter().map(|i| (i.key, Value::String(i.id))).collect();
+            Value::Object(keys)
         }
         "splitConflicts" => match split_conflicts(&args::<Text>(a)?.text) {
             Ok(s) => json!(s),

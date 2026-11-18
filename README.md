@@ -32,6 +32,7 @@ Nothing here reads or writes a file: every function takes texts and models, and 
 | `validate` | `model`, the submachines' summaries | problems by element id |
 | `checkText` | `kind`, `text` | the normalized text, or the message |
 | `compare` | `older`, `newer` | the changes, with their descriptions |
+| `keys` | `model` | the id of each element by the key `compare` matches it by |
 | `splitConflicts` | a text with Git's conflict markers | its two sides |
 | `adopt` | `result`, `source`, `keys` | the result with that element as `source` has it |
 | `generate` | fsm-cli's WebAssembly request | fsm-cli's response |

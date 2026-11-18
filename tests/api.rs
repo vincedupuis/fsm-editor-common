@@ -84,6 +84,7 @@ fn requests() -> Vec<Value> {
         req("checkText", json!({ "kind": "name", "text": "Idle 2" })),
         req("checkText", json!({ "kind": "color", "text": "red" })),
         req("compare", json!({ "older": read, "newer": edited })),
+        req("keys", json!({ "model": edited })),
         req("splitConflicts", json!({ "text": "a\n<<<<<<< ours\nb\n=======\nc\n>>>>>>> theirs\n" })),
         req("splitConflicts", json!({ "text": "<<<<<<<\nonly\n" })),
         req("adopt", json!({ "result": read, "source": edited, "keys": ["element@Stopped"] })),
