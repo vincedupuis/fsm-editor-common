@@ -1,0 +1,37 @@
+[package]
+name = "fsm-editor-common"
+version = "0.1.0"
+edition = "2024"
+description = "The file half of FSM Editor's three editions: reading, writing, converting, validating, comparing and merging state machines"
+license = "MIT"
+repository = "https://github.com/vincedupuis/fsm-editor-common"
+readme = "README.md"
+publish = false
+
+# The library, built as a WebAssembly module for the VS Code edition with
+#   cargo rustc --lib --crate-type cdylib --profile wasm --target wasm32-unknown-unknown
+# (the crate type is given there rather than here: a library built as rlib and cdylib at once gets no LTO), and the
+# sidecar program the Visual Studio and JetBrains editions run (`fsm-editor-common serve`).
+[lib]
+name = "fsm_editor_common"
+path = "src/lib.rs"
+
+[[bin]]
+name = "fsm-editor-common"
+path = "src/main.rs"
+
+[dependencies]
+# fsm-cli as a library: the .fsm reader, the validator, the grammar and code generation. A path during development;
+# a git tag once fsm-cli is released.
+fsm-cli = { path = "../fsm-cli" }
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = { version = "1.0.154", features = ["preserve_order"] }
+
+[profile.release]
+lto = true
+codegen-units = 1
+strip = true
+
+[profile.wasm]
+inherits = "release"
+opt-level = "s"
