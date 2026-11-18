@@ -1,0 +1,29 @@
+{
+  "format": 1,
+  "initial": { "x": 40, "y": 40 },
+  "elements": [
+    {
+      "name": "A",
+      "x": 100,
+      "y": 40,
+      "width": 140,
+      "height": 60
+    },
+    {
+      "name": "Comp",
+      "x": 280,
+      "y": 40,
+      "width": 190,
+      "height": 130,
+      "elements": [
+        {
+          "name": "X",
+          "x": 30,
+          "y": 50,
+          "width": 140,
+          "height": 60
+        }
+      ]
+    }
+  ]
+}

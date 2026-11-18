@@ -1,0 +1,4 @@
+line 10: Missing field 'target' in a transition.
+line 15: An internal transition has no 'target'.
+line 17: Missing field 'type' in a transition.
+line 20: Missing field 'target' in a transition.

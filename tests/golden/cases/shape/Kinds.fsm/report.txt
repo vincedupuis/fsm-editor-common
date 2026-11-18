@@ -1,0 +1,10 @@
+line 5: Field 'documentation' must be a text.
+line 8: Field 'initial' must be an object.
+line 10: Items of 'points' must be objects.
+line 16: Field 'entry' must be a text.
+line 19: Field 'defer' must be a text.
+line 20: Field 'transitions' must be a list.
+line 24: Items of 'elements' must be objects.
+line 26: Field 'name' must be a text.
+line 28: Field 'points' must be a list.
+line 29: Field 'elements' must be a list.

@@ -1,0 +1,26 @@
+{
+  "format": 1,
+  "name": "Sub",
+  "type": "behavioral",
+  "points": [
+    {
+      "name": "again",
+      "type": "entryPoint",
+      "transitions": [
+        { "type": "external", "target": "Work" }
+      ]
+    },
+    { "name": "done", "type": "exitPoint" },
+    { "name": "quit", "type": "exitPoint" }
+  ],
+  "initial": { "target": "Work" },
+  "elements": [
+    {
+      "name": "Work",
+      "type": "state",
+      "transitions": [
+        { "type": "external", "trigger": "finish", "target": "Sub.done" }
+      ]
+    }
+  ]
+}

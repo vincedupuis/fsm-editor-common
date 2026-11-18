@@ -1,0 +1,7 @@
+error -
+generated 0
+loss bend points of the transition from state 'A' on go that are not numbers
+loss the label position of the transition from state 'A' on go, which is not a number
+loss the label position of the transition from state 'A' on tick, which is not a number
+loss bend points of the transition from state 'B' on back that are not numbers
+loss the label position of the transition from state 'B' on back, which is not a number

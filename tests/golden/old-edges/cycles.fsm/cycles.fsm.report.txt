@@ -1,0 +1,25 @@
+error -
+generated 4
+loss the size of the initial pseudostate (40 × 30): it is drawn at its default size, around the same center
+loss the size of the choice 'c1' (40 × 30): it is drawn at its default size, around the same center
+loss the size of the choice 'c2' (40 × 30): it is drawn at its default size, around the same center
+loss the size of the choice 'cs' (40 × 30): it is drawn at its default size, around the same center
+loss the size of the choice (40 × 30): it is drawn at its default size, around the same center
+loss the size of the junction (40 × 30): it is drawn at its default size, around the same center
+loss the size of the junction 'j1' (40 × 30): it is drawn at its default size, around the same center
+loss the size of the junction 'j2' (40 × 30): it is drawn at its default size, around the same center
+loss the size of the junction 'j3' (40 × 30): it is drawn at its default size, around the same center
+loss the size of the junction 'j4' (40 × 30): it is drawn at its default size, around the same center
+loss the size of the junction 'k1' (40 × 30): it is drawn at its default size, around the same center
+loss the size of the junction 'k2' (40 × 30): it is drawn at its default size, around the same center
+loss the size of the deep history (40 × 30): it is drawn at its default size, around the same center
+loss the size of the choice 'hc' (40 × 30): it is drawn at its default size, around the same center
+loss the size of the entry point 'ep' (40 × 30): it is drawn at its default size, around the same center
+loss the size of the choice 'ec' (40 × 30): it is drawn at its default size, around the same center
+loss the size of the exit point 'xp' (40 × 30): it is drawn at its default size, around the same center
+loss the size of the junction 'xj' (40 × 30): it is drawn at its default size, around the same center
+loss the size of the choice 'fc' (40 × 30): it is drawn at its default size, around the same center
+loss the size of the junction 'mj' (40 × 30): it is drawn at its default size, around the same center
+loss the size of the choice 'jc' (40 × 30): it is drawn at its default size, around the same center
+loss the size of the choice 'd2' (40 × 30): it is drawn at its default size, around the same center
+loss the size of the entry point 'mep' (40 × 30): it is drawn at its default size, around the same center

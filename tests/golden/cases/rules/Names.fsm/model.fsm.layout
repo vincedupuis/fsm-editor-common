@@ -1,0 +1,99 @@
+{
+  "format": 1,
+  "initial": { "x": 40, "y": 40 },
+  "elements": [
+    {
+      "name": "A",
+      "x": 100,
+      "y": 40,
+      "width": 430,
+      "height": 130,
+      "points": [
+        {
+          "name": "entry1*",
+          "x": -8,
+          "y": 10
+        },
+        {
+          "name": "p.q",
+          "x": 422,
+          "y": 10
+        },
+        {
+          "name": "history",
+          "x": -8,
+          "y": 34
+        },
+        {
+          "name": "e",
+          "x": -8,
+          "y": 58
+        },
+        {
+          "name": "e",
+          "x": 422,
+          "y": 34
+        }
+      ],
+      "initial": { "x": 30, "y": 50 },
+      "elements": [
+        {
+          "name": "B",
+          "x": 90,
+          "y": 50,
+          "width": 140,
+          "height": 60
+        },
+        {
+          "name": "a*b",
+          "x": 270,
+          "y": 50,
+          "width": 140,
+          "height": 60
+        }
+      ]
+    },
+    {
+      "name": "state1*",
+      "x": 570,
+      "y": 40,
+      "width": 140,
+      "height": 60
+    },
+    {
+      "name": "C.D",
+      "x": 750,
+      "y": 40,
+      "width": 140,
+      "height": 60
+    },
+    {
+      "name": "Waiting for payment",
+      "x": 930,
+      "y": 40,
+      "width": 140,
+      "height": 60
+    },
+    {
+      "name": "Names",
+      "x": 1110,
+      "y": 40,
+      "width": 140,
+      "height": 60
+    },
+    {
+      "name": "A",
+      "x": 1290,
+      "y": 40,
+      "width": 140,
+      "height": 60
+    },
+    {
+      "name": "n*",
+      "x": 1470,
+      "y": 40,
+      "width": 160,
+      "height": 64
+    }
+  ]
+}

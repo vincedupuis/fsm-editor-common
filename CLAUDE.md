@@ -8,11 +8,11 @@ The file half of FSM Editor's three editions, in Rust (README.md): reading and w
 cargo build --release                 # the sidecar, target/release/fsm-editor-common
 cargo rustc --lib --crate-type cdylib --profile wasm --target wasm32-unknown-unknown
                                       # target/wasm32-unknown-unknown/wasm/fsm_editor_common.wasm
-cargo test                            # fsm-cli's cases (FSM_CASES, else ../fsm-cli/tests/cases), the fixtures, the interface
+cargo test                            # fsm-cli's cases (FSM_CASES, else ../fsm-cli/tests/cases), the fixtures, the golden files, the interface
 FSM_UPDATE_API_CASES=1 cargo test --test api   # writes api-cases/cases.jsonl: check the change first
+FSM_UPDATE_GOLDEN=1 cargo test --test golden   # writes tests/golden: a change of the files the editions write, check the diff
 cargo clippy --all-targets
 cargo fmt                             # rustfmt.toml: 120 columns
-cargo run --release --example parity -- <manifest> <out>   # the umbrella's parity/check.mjs runs it
 ```
 
 fsm-cli is a path dependency (`../fsm-cli`): the umbrella repo's checkout, or in the workflows a checkout beside this one at `FSM_CLI_VERSION` (release.yml). After fsm-cli's version changes, `cargo update -p fsm-cli` so that `--locked` builds pass.
@@ -35,7 +35,7 @@ fsm-cli is a path dependency (`../fsm-cli`): the umbrella repo's checkout, or in
 
 ## Rules
 
-- **Byte for byte:** this is a port of the VS Code edition's `format.ts`, `json.ts`, `xmi.ts`, `xml.ts`, `convert.ts`, `compare.ts` and `merge.ts`; the files it writes are the editions' files. JavaScript's semantics are kept where they show in a file or a message: `Math.round` (`js_round`), `Math.hypot` (`js_hypot`), `String(n)` (`fsm_cli::json::number`), `JSON.stringify`, `Number(text)`, object key order, NaN in `Math.max`. Check with the umbrella's `node parity/check.mjs --only common` and `cargo test`.
+- **Byte for byte:** this is a port of the VS Code edition's `format.ts`, `json.ts`, `xmi.ts`, `xml.ts`, `convert.ts`, `compare.ts` and `merge.ts`; the files it writes are the editions' files. JavaScript's semantics are kept where they show in a file or a message: `Math.round` (`js_round`), `Math.hypot` (`js_hypot`), `String(n)` (`fsm_cli::json::number`), `JSON.stringify`, `Number(text)`, object key order, NaN in `Math.max`. `tests/golden` holds what the three editions wrote, byte for byte, when this code replaced theirs (the examples, fsm-cli's cases, old files with edge cases, converted alone and together): `tests/golden.rs` checks every change against it.
 - **fsm-cli owns** the `.fsm` format, its reader's problems, the validator, the grammar and its messages, code generation. Don't fork them here: change fsm-cli, release it, then follow it here.
 - **The layout file's format is this repo's:** change `schemas/fsm-layout.schema.json`, the reader and `tests/fixtures/layout` together.
 - **The interface is a contract** with three editions: change `api.rs`, `schemas/api.schema.json` and `api-cases` together; adding a field to a result is compatible, removing or renaming one is not.

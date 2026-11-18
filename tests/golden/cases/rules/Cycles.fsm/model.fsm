@@ -1,0 +1,30 @@
+{
+  "format": 1,
+  "name": "Cycles",
+  "type": "behavioral",
+  "initial": { "target": "A" },
+  "elements": [
+    {
+      "name": "A",
+      "type": "state",
+      "transitions": [
+        { "type": "external", "trigger": "go", "target": "j1*" }
+      ]
+    },
+    {
+      "name": "j1*",
+      "type": "junction",
+      "transitions": [
+        { "type": "external", "target": "c1*" }
+      ]
+    },
+    {
+      "name": "c1*",
+      "type": "choice",
+      "transitions": [
+        { "type": "external", "guard": "a()", "target": "j1*" },
+        { "type": "external", "guard": "else", "target": "A" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "format": 1,
+  "name": "DefaultEntry",
+  "type": "behavioral",
+  "initial": { "target": "A" },
+  "elements": [
+    {
+      "name": "A",
+      "type": "state",
+      "transitions": [
+        { "type": "external", "trigger": "go", "target": "Comp" }
+      ]
+    },
+    {
+      "name": "Comp",
+      "type": "state",
+      "elements": [
+        { "name": "X", "type": "state" }
+      ]
+    }
+  ]
+}

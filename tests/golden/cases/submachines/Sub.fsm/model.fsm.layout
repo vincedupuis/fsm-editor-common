@@ -1,0 +1,30 @@
+{
+  "format": 1,
+  "points": [
+    {
+      "name": "again",
+      "x": 280,
+      "y": 40
+    },
+    {
+      "name": "done",
+      "x": 336,
+      "y": 40
+    },
+    {
+      "name": "quit",
+      "x": 392,
+      "y": 40
+    }
+  ],
+  "initial": { "x": 40, "y": 40 },
+  "elements": [
+    {
+      "name": "Work",
+      "x": 100,
+      "y": 40,
+      "width": 140,
+      "height": 60
+    }
+  ]
+}

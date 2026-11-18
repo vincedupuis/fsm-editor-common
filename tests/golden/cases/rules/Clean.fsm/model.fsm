@@ -1,0 +1,22 @@
+{
+  "format": 1,
+  "name": "Clean",
+  "type": "behavioral",
+  "initial": { "target": "A" },
+  "elements": [
+    {
+      "name": "A",
+      "type": "state",
+      "transitions": [
+        { "type": "external", "trigger": "go", "target": "B" }
+      ]
+    },
+    {
+      "name": "B",
+      "type": "state",
+      "transitions": [
+        { "type": "external", "trigger": "back", "guard": "ok()", "action": "log()", "target": "A" }
+      ]
+    }
+  ]
+}

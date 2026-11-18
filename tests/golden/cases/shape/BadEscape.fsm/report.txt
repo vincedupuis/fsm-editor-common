@@ -1,0 +1,1 @@
+line 1: Invalid escape in a text.

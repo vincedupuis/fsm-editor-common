@@ -1,0 +1,6 @@
+line 4: Field 'type' must be "behavioral" or "protocol".
+line 8: Field 'type' must be "state", "choice", "junction", "fork", "join", "final", "terminate" or "comment".
+line 10: Missing field 'type' in an element.
+line 13: Missing field 'name' in a state.
+line 21: Field 'type' must be "external", "internal" or "local".
+line 28: Field 'type' must be "entryPoint" or "exitPoint".

@@ -1,0 +1,18 @@
+{
+  "format": 1,
+  "name": "Reachability",
+  "type": "behavioral",
+  "elements": [
+    { "name": "A", "type": "state" },
+    { "name": "Lost", "type": "state" },
+    {
+      "name": "Comp",
+      "type": "state",
+      "initial": { "target": "In" },
+      "elements": [
+        { "name": "In", "type": "state" },
+        { "name": "Out", "type": "state" }
+      ]
+    }
+  ]
+}

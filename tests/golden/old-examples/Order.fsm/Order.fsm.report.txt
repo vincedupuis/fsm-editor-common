@@ -1,0 +1,5 @@
+error -
+generated 1
+loss the connection point reference of state 'Payment' to point 'p_retry' of Payment.fsm, which was not found: it keeps that id as the point's name
+loss the connection point reference of state 'Payment' to point 'p_failed' of Payment.fsm, which was not found: it keeps that id as the point's name
+loss the connection point reference of state 'Payment' to point 'p_cancelled' of Payment.fsm, which was not found: it keeps that id as the point's name

@@ -1,0 +1,49 @@
+{
+  "format": 1,
+  "name": "References",
+  "type": "behavioral",
+  "points": [
+    {
+      "name": "out",
+      "type": "exitPoint",
+      "transitions": [
+        { "type": "external", "target": "A" }
+      ]
+    }
+  ],
+  "initial": {},
+  "elements": [
+    {
+      "name": "A",
+      "type": "state",
+      "transitions": [
+        { "type": "external", "trigger": "a", "target": "Nowhere" },
+        { "type": "external", "trigger": "b", "target": "A.nope" },
+        { "type": "external", "trigger": "c", "target": "B.history" },
+        { "type": "external", "trigger": "d", "target": "B.deepHistory" },
+        { "type": "external", "trigger": "e", "target": "B" },
+        { "type": "external", "trigger": "f", "target": "References.out" },
+        { "type": "external", "trigger": "g", "target": "note1*" }
+      ]
+    },
+    {
+      "name": "B",
+      "type": "state",
+      "initial": { "target": "Missing" },
+      "history": { "action": "h()" },
+      "elements": [
+        { "name": "C", "type": "state" }
+      ]
+    },
+    {
+      "name": "note1*",
+      "type": "comment",
+      "text": "Anchors that name nothing are not problems",
+      "anchors": [
+        "Gone",
+        { "source": "A", "trigger": "zzz", "target": "B" }
+      ]
+    },
+    { "name": "note2*", "type": "comment", "text": "No anchors" }
+  ]
+}

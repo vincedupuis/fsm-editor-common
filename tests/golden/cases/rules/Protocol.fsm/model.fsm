@@ -1,0 +1,19 @@
+{
+  "format": 1,
+  "name": "Protocol",
+  "type": "protocol",
+  "initial": { "target": "A" },
+  "elements": [
+    {
+      "name": "A",
+      "type": "state",
+      "entry": "e()",
+      "do": "d()",
+      "exit": "x()",
+      "transitions": [
+        { "type": "external", "trigger": "go", "guard": "g()", "action": "act()", "precondition": "p()", "postcondition": "q()", "target": "B" }
+      ]
+    },
+    { "name": "B", "type": "state" }
+  ]
+}

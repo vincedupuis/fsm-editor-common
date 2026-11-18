@@ -1,0 +1,9 @@
+{
+  "format": 1,
+  "name": "Self",
+  "type": "behavioral",
+  "initial": { "target": "Again" },
+  "elements": [
+    { "name": "Again", "type": "state", "submachine": "Self.fsm" }
+  ]
+}

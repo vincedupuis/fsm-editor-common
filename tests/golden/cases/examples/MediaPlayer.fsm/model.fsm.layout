@@ -1,0 +1,118 @@
+{
+  "format": 1,
+  "initial": { "x": 40, "y": 40 },
+  "elements": [
+    {
+      "name": "comment1*",
+      "x": 100,
+      "y": 40,
+      "width": 160,
+      "height": 64
+    },
+    {
+      "name": "Off",
+      "x": 300,
+      "y": 40,
+      "width": 140,
+      "height": 60
+    },
+    {
+      "name": "final1*",
+      "x": 480,
+      "y": 40
+    },
+    {
+      "name": "On",
+      "x": 546,
+      "y": 40,
+      "width": 1034,
+      "height": 280,
+      "points": [
+        {
+          "name": "fault",
+          "x": 1026,
+          "y": 10
+        }
+      ],
+      "initial": { "x": 30, "y": 50 },
+      "deepHistory": { "x": 90, "y": 50 },
+      "elements": [
+        {
+          "name": "Stopped",
+          "x": 156,
+          "y": 50,
+          "width": 140,
+          "height": 60
+        },
+        {
+          "name": "Paused",
+          "x": 336,
+          "y": 50,
+          "width": 140,
+          "height": 60
+        },
+        {
+          "name": "choice1*",
+          "x": 516,
+          "y": 50
+        },
+        {
+          "name": "Playing",
+          "x": 584,
+          "y": 50,
+          "width": 430,
+          "height": 210,
+          "regions": [
+            {
+              "name": "audio",
+              "initial": { "x": 30, "y": 50 },
+              "elements": [
+                {
+                  "name": "Stereo",
+                  "x": 90,
+                  "y": 50,
+                  "width": 140,
+                  "height": 60
+                },
+                {
+                  "name": "Mono",
+                  "x": 270,
+                  "y": 50,
+                  "width": 140,
+                  "height": 60
+                }
+              ]
+            },
+            {
+              "name": "video",
+              "initial": { "x": 30, "y": 130 },
+              "elements": [
+                {
+                  "name": "HD",
+                  "x": 90,
+                  "y": 130,
+                  "width": 140,
+                  "height": 60
+                },
+                {
+                  "name": "SD",
+                  "x": 270,
+                  "y": 130,
+                  "width": 140,
+                  "height": 60
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Fault",
+      "x": 1620,
+      "y": 40,
+      "width": 140,
+      "height": 60
+    }
+  ]
+}

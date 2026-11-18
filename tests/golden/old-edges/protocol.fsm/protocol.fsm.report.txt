@@ -1,0 +1,4 @@
+error -
+generated 0
+loss the context 'DoorController' of the state machine
+loss the name 'main' of the state machine's region

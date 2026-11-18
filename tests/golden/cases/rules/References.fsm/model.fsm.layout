@@ -1,0 +1,52 @@
+{
+  "format": 1,
+  "points": [
+    {
+      "name": "out",
+      "x": 1036,
+      "y": 40
+    }
+  ],
+  "initial": { "x": 40, "y": 40 },
+  "elements": [
+    {
+      "name": "A",
+      "x": 100,
+      "y": 40,
+      "width": 140,
+      "height": 60
+    },
+    {
+      "name": "B",
+      "x": 280,
+      "y": 40,
+      "width": 316,
+      "height": 130,
+      "initial": { "x": 30, "y": 50 },
+      "history": { "x": 90, "y": 50 },
+      "elements": [
+        {
+          "name": "C",
+          "x": 156,
+          "y": 50,
+          "width": 140,
+          "height": 60
+        }
+      ]
+    },
+    {
+      "name": "note1*",
+      "x": 636,
+      "y": 40,
+      "width": 160,
+      "height": 64
+    },
+    {
+      "name": "note2*",
+      "x": 836,
+      "y": 40,
+      "width": 160,
+      "height": 64
+    }
+  ]
+}

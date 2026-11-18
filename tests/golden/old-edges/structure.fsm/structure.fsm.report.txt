@@ -1,0 +1,15 @@
+error -
+generated 11
+rename the state 'S' is now 'S2' (its name was used twice)
+loss an unnamed initial pseudostate: a region has at most one
+loss the guard, triggers, kind or conditions of the initial transition
+loss a second transition leaving the history pseudostate
+loss the anchor of comment 'comment1*' to the transition from an unnamed initial pseudostate
+loss the anchor of comment 'comment1*' to 'gone', which is not an element or a transition
+loss the target of the internal transition from state 'S'
+loss an unnamed connection point reference on state 'S2', which is not a submachine state
+loss the transitions leaving final state 'final1*'
+loss the transitions leaving terminate pseudostate 'terminate1*'
+loss the target of the internal transition from state 'S'
+loss the transition from an unnamed initial pseudostate, whose source does not exist
+loss a transition leaving comment 'comment1*'

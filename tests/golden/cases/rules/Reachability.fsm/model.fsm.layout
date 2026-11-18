@@ -1,0 +1,43 @@
+{
+  "format": 1,
+  "elements": [
+    {
+      "name": "A",
+      "x": 40,
+      "y": 40,
+      "width": 140,
+      "height": 60
+    },
+    {
+      "name": "Lost",
+      "x": 220,
+      "y": 40,
+      "width": 140,
+      "height": 60
+    },
+    {
+      "name": "Comp",
+      "x": 400,
+      "y": 40,
+      "width": 430,
+      "height": 130,
+      "initial": { "x": 30, "y": 50 },
+      "elements": [
+        {
+          "name": "In",
+          "x": 90,
+          "y": 50,
+          "width": 140,
+          "height": 60
+        },
+        {
+          "name": "Out",
+          "x": 270,
+          "y": 50,
+          "width": 140,
+          "height": 60
+        }
+      ]
+    }
+  ]
+}

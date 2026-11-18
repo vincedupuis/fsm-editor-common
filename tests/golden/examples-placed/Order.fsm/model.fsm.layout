@@ -1,0 +1,56 @@
+{
+  "format": 1,
+  "initial": { "x": 40, "y": 40 },
+  "elements": [
+    {
+      "name": "Cart",
+      "x": 100,
+      "y": 40,
+      "width": 140,
+      "height": 60
+    },
+    {
+      "name": "Payment",
+      "x": 280,
+      "y": 40,
+      "width": 140,
+      "height": 60,
+      "points": [
+        {
+          "name": "retry",
+          "x": -8,
+          "y": 10
+        },
+        {
+          "name": "failed",
+          "x": 132,
+          "y": 34
+        },
+        {
+          "name": "cancelled",
+          "x": 132,
+          "y": 44
+        }
+      ]
+    },
+    {
+      "name": "Shipped",
+      "x": 460,
+      "y": 40,
+      "width": 140,
+      "height": 60
+    },
+    {
+      "name": "PaymentFailed",
+      "x": 640,
+      "y": 40,
+      "width": 140,
+      "height": 60
+    },
+    {
+      "name": "final1*",
+      "x": 820,
+      "y": 40
+    }
+  ]
+}

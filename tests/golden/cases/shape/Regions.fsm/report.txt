@@ -1,0 +1,7 @@
+line 5: Field 'regions' must be a list.
+line 10: Field 'regions' needs two regions or more: the fields of a single region go directly in its owner.
+line 15: Field 'initial' cannot be used with 'regions': each region has its own.
+line 21: Missing field 'name' in a region.
+line 24: Items of 'regions' must be objects.
+line 27: Unknown field 'regions' in a region.
+line 6: Field 'elements' cannot be used with 'regions': each region has its own.

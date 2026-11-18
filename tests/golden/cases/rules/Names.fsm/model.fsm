@@ -1,0 +1,33 @@
+{
+  "format": 1,
+  "name": "Names",
+  "type": "behavioral",
+  "initial": { "target": "A" },
+  "elements": [
+    {
+      "name": "A",
+      "type": "state",
+      "transitions": [
+        { "type": "external", "trigger": "x", "target": "B" }
+      ],
+      "points": [
+        { "name": "entry1*", "type": "entryPoint" },
+        { "name": "p.q", "type": "exitPoint" },
+        { "name": "history", "type": "entryPoint" },
+        { "name": "e", "type": "entryPoint" },
+        { "name": "e", "type": "exitPoint" }
+      ],
+      "initial": { "target": "B" },
+      "elements": [
+        { "name": "B", "type": "state" },
+        { "name": "a*b", "type": "state" }
+      ]
+    },
+    { "name": "state1*", "type": "state" },
+    { "name": "C.D", "type": "state" },
+    { "name": "Waiting for payment", "type": "state" },
+    { "name": "Names", "type": "state" },
+    { "name": "A", "type": "state" },
+    { "name": "n*", "type": "comment", "text": "A generated name" }
+  ]
+}
