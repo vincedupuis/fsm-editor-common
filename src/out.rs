@@ -166,7 +166,11 @@ pub fn js_parse(text: &str) -> Option<Out> {
     json::parse(text).ok().map(|n| plain(&n))
 }
 
-fn number(n: f64) -> String {
+/// A number as JavaScript's `String(n)` writes it, whole numbers without formatting machinery.
+pub fn number(n: f64) -> String {
+    if n.fract() == 0.0 && n.abs() < 1e15 {
+        return (n as i64).to_string();
+    }
     if n.is_finite() {
         json::number(n)
     } else if n.is_nan() {
@@ -178,26 +182,39 @@ fn number(n: f64) -> String {
     }
 }
 
-fn flat(v: &Out) -> String {
-    match v {
-        Out::Str(s) => json::quote(s),
-        Out::Num(n) => number(*n),
-        Out::Bool(b) => b.to_string(),
-        Out::Arr(items) => format!("[{}]", items.iter().map(flat).collect::<Vec<_>>().join(", ")),
-        Out::Obj(o) => {
-            if o.fields.is_empty() {
-                "{}".into()
-            } else {
-                format!(
-                    "{{ {} }}",
-                    o.fields
-                        .iter()
-                        .map(|(k, x)| format!("{}: {}", json::quote(k), flat(x)))
-                        .collect::<Vec<_>>()
-                        .join(", ")
-                )
-            }
+fn flat_obj(o: &Obj, out: &mut String) {
+    if o.fields.is_empty() {
+        out.push_str("{}");
+        return;
+    }
+    out.push_str("{ ");
+    for (i, (k, x)) in o.fields.iter().enumerate() {
+        if i > 0 {
+            out.push_str(", ");
         }
+        out.push_str(&json::quote(k));
+        out.push_str(": ");
+        flat_into(x, out);
+    }
+    out.push_str(" }");
+}
+
+fn flat_into(v: &Out, out: &mut String) {
+    match v {
+        Out::Str(s) => out.push_str(&json::quote(s)),
+        Out::Num(n) => out.push_str(&number(*n)),
+        Out::Bool(b) => out.push_str(if *b { "true" } else { "false" }),
+        Out::Arr(items) => {
+            out.push('[');
+            for (i, x) in items.iter().enumerate() {
+                if i > 0 {
+                    out.push_str(", ");
+                }
+                flat_into(x, out);
+            }
+            out.push(']');
+        }
+        Out::Obj(o) => flat_obj(o, out),
     }
 }
 
@@ -211,25 +228,36 @@ struct Writer<'a> {
 }
 
 impl Writer<'_> {
-    fn put(&mut self, v: &Out, indent: &str, prefix: &str, suffix: &str, top: bool) {
-        match v {
-            Out::Obj(o) => {
-                let line = self.lines.len() + 1;
-                for id in [&o.id, &o.tid].into_iter().flatten() {
-                    self.ids.entry(id.clone()).or_insert(line);
-                }
-                if o.fields.is_empty() || (!top && (self.inline)(o)) {
-                    self.lines.push(format!("{indent}{prefix}{}{suffix}", flat(v)));
-                    return;
-                }
-                self.lines.push(format!("{indent}{prefix}{{"));
-                let inner = format!("{indent}  ");
-                let n = o.fields.len();
-                for (i, (k, x)) in o.fields.iter().enumerate() {
-                    self.put(x, &inner, &format!("{}: ", json::quote(k)), if i < n - 1 { "," } else { "" }, false);
-                }
-                self.lines.push(format!("{indent}}}{suffix}"));
+    fn put_obj(&mut self, o: &Obj, indent: &str, prefix: &str, suffix: &str, top: bool) {
+        let line = self.lines.len() + 1;
+        for id in [&o.id, &o.tid].into_iter().flatten() {
+            if !self.ids.contains_key(id) {
+                self.ids.insert(id.clone(), line);
             }
+        }
+        if o.fields.is_empty() || (!top && (self.inline)(o)) {
+            let mut l = String::with_capacity(indent.len() + prefix.len() + 64);
+            l.push_str(indent);
+            l.push_str(prefix);
+            flat_obj(o, &mut l);
+            l.push_str(suffix);
+            self.lines.push(l);
+            return;
+        }
+        self.lines.push(format!("{indent}{prefix}{{"));
+        let inner = format!("{indent}  ");
+        let n = o.fields.len();
+        for (i, (k, x)) in o.fields.iter().enumerate() {
+            let mut p = json::quote(k);
+            p.push_str(": ");
+            self.put(x, &inner, &p, if i < n - 1 { "," } else { "" });
+        }
+        self.lines.push(format!("{indent}}}{suffix}"));
+    }
+
+    fn put(&mut self, v: &Out, indent: &str, prefix: &str, suffix: &str) {
+        match v {
+            Out::Obj(o) => self.put_obj(o, indent, prefix, suffix, false),
             Out::Arr(items) => {
                 if items.is_empty() {
                     self.lines.push(format!("{indent}{prefix}[]{suffix}"));
@@ -239,11 +267,18 @@ impl Writer<'_> {
                 let inner = format!("{indent}  ");
                 let n = items.len();
                 for (i, x) in items.iter().enumerate() {
-                    self.put(x, &inner, "", if i < n - 1 { "," } else { "" }, false);
+                    self.put(x, &inner, "", if i < n - 1 { "," } else { "" });
                 }
                 self.lines.push(format!("{indent}]{suffix}"));
             }
-            _ => self.lines.push(format!("{indent}{prefix}{}{suffix}", flat(v))),
+            _ => {
+                let mut l = String::with_capacity(indent.len() + prefix.len() + 32);
+                l.push_str(indent);
+                l.push_str(prefix);
+                flat_into(v, &mut l);
+                l.push_str(suffix);
+                self.lines.push(l);
+            }
         }
     }
 }
@@ -253,7 +288,7 @@ impl Writer<'_> {
 /// line of each id the objects carry.
 pub fn write_json(root: &Obj, inline: &dyn Fn(&Obj) -> bool) -> (String, Lines) {
     let mut w = Writer { lines: Vec::new(), inline, ids: HashMap::new() };
-    w.put(&Out::Obj(root.clone()), "", "", "", true);
+    w.put_obj(root, "", "", "", true);
     let mut text = w.lines.join("\n");
     text.push('\n');
     (text, w.ids)

@@ -1,0 +1,371 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/vincedupuis/fsm-editor-common/schemas/api.schema.json",
+  "title": "fsm-editor-common requests and answers",
+  "description": "A request is {\"id\", \"fn\", \"args\"}; its answer {\"id\", \"result\"} or {\"id\", \"error\"}. `$defs.functions` gives each function's `args` and `result`.",
+  "oneOf": [{ "$ref": "#/$defs/request" }, { "$ref": "#/$defs/answer" }],
+  "$defs": {
+    "request": {
+      "type": "object",
+      "required": ["fn"],
+      "properties": { "id": {}, "fn": { "type": "string" }, "args": { "type": "object" } },
+      "additionalProperties": false
+    },
+    "answer": {
+      "type": "object",
+      "required": ["id"],
+      "properties": { "id": {}, "result": {}, "error": { "type": "string", "description": "`<fn>: <message>`" } },
+      "oneOf": [{ "required": ["result"] }, { "required": ["error"] }],
+      "additionalProperties": false
+    },
+
+    "text": { "type": "object", "required": ["text"], "properties": { "text": { "type": "string" } }, "additionalProperties": false },
+    "files": {
+      "type": "object",
+      "required": ["model"],
+      "properties": {
+        "model": { "type": "string", "description": "The model file's text." },
+        "layout": { "type": ["string", "null"], "description": "The layout file's text, when there is one." }
+      },
+      "additionalProperties": false
+    },
+    "lines": { "type": "object", "additionalProperties": { "type": "integer", "minimum": 1 }, "description": "Line of each element in the model file, by id." },
+    "problem": {
+      "type": "object",
+      "required": ["line", "message"],
+      "properties": { "line": { "type": "integer" }, "message": { "type": "string" } },
+      "additionalProperties": false
+    },
+    "number": { "type": ["number", "null"], "description": "null: not a number (an old file's infinite coordinates); read as 0." },
+    "color": { "type": "string", "pattern": "^#[0-9a-f]{6}$" },
+    "itemColors": {
+      "type": "object",
+      "propertyNames": { "enum": ["background", "entry", "exit", "doActivity", "deferrable", "invariant", "triggers", "guard", "action", "precondition", "postcondition"] },
+      "additionalProperties": { "type": "string" }
+    },
+    "point": { "type": "object", "properties": { "x": { "$ref": "#/$defs/number" }, "y": { "$ref": "#/$defs/number" } }, "additionalProperties": false },
+    "region": {
+      "type": "object",
+      "required": ["id"],
+      "properties": { "id": { "type": "string" }, "name": { "type": "string" }, "size": { "$ref": "#/$defs/number" } },
+      "additionalProperties": false
+    },
+    "vertexType": {
+      "enum": ["state", "final", "initial", "shallowHistory", "deepHistory", "choice", "junction", "fork", "join", "entryPoint", "exitPoint", "terminate", "connectionPointRef", "comment"]
+    },
+    "vertex": {
+      "type": "object",
+      "required": ["id", "type"],
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "$ref": "#/$defs/vertexType" },
+        "name": { "type": "string" },
+        "parent": { "type": "string", "description": "A region's id, or a state's for the points on its border." },
+        "x": { "$ref": "#/$defs/number" },
+        "y": { "$ref": "#/$defs/number" },
+        "w": { "$ref": "#/$defs/number" },
+        "h": { "$ref": "#/$defs/number" },
+        "regions": { "type": "array", "items": { "$ref": "#/$defs/region" } },
+        "regionLayout": { "enum": ["horizontal", "vertical"] },
+        "entry": { "type": "string" },
+        "exit": { "type": "string" },
+        "doActivity": { "type": "string" },
+        "deferrable": { "type": "array", "items": { "type": "string" } },
+        "invariant": { "type": "string" },
+        "submachine": { "type": "string" },
+        "stereotype": { "type": "string" },
+        "ref": { "type": "string" },
+        "pointKind": { "enum": ["entry", "exit"] },
+        "text": { "type": "string" },
+        "anchors": { "type": "array", "items": { "type": "string" } },
+        "color": { "type": "string" },
+        "itemColors": { "$ref": "#/$defs/itemColors" },
+        "group": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "transition": {
+      "type": "object",
+      "required": ["id", "source"],
+      "properties": {
+        "id": { "type": "string" },
+        "source": { "type": "string" },
+        "target": { "type": "string", "description": "A vertex's id, or U+E001 followed by a reference that names nothing." },
+        "kind": { "enum": ["external", "internal", "local"] },
+        "triggers": { "type": "array", "items": { "type": "string" } },
+        "guard": { "type": "string" },
+        "action": { "type": "string" },
+        "precondition": { "type": "string" },
+        "postcondition": { "type": "string" },
+        "points": { "type": "array", "items": { "$ref": "#/$defs/point" } },
+        "labelOffset": { "$ref": "#/$defs/point" },
+        "color": { "type": "string" },
+        "itemColors": { "$ref": "#/$defs/itemColors" }
+      },
+      "additionalProperties": false
+    },
+    "model": {
+      "description": "The editors' model: flat, with ids and absolute coordinates.",
+      "type": "object",
+      "properties": {
+        "version": { "const": 1 },
+        "name": { "type": "string" },
+        "kind": { "enum": ["behavioral", "protocol"] },
+        "documentation": { "type": "string" },
+        "regions": { "type": "array", "items": { "$ref": "#/$defs/region" } },
+        "vertices": { "type": "array", "items": { "$ref": "#/$defs/vertex" } },
+        "transitions": { "type": "array", "items": { "$ref": "#/$defs/transition" } }
+      },
+      "additionalProperties": false
+    },
+    "connectionPoint": {
+      "type": "object",
+      "required": ["id", "name", "kind"],
+      "properties": { "id": { "type": "string" }, "name": { "type": "string" }, "kind": { "enum": ["entry", "exit"] } },
+      "additionalProperties": false
+    },
+    "submachineInfo": {
+      "type": "object",
+      "properties": {
+        "found": { "type": "boolean" },
+        "name": { "type": "string" },
+        "file": { "type": "string" },
+        "points": { "type": "array", "items": { "$ref": "#/$defs/connectionPoint" } }
+      },
+      "additionalProperties": false
+    },
+    "check": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["ok", "value"],
+          "properties": { "ok": { "const": true }, "value": { "type": ["string", "array"], "items": { "type": "string" } } },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["ok", "error"],
+          "properties": { "ok": { "const": false }, "error": { "type": "string" } },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "change": {
+      "type": "object",
+      "required": ["key", "kind", "what", "label", "properties", "described", "modelDescribed", "modelChange"],
+      "properties": {
+        "key": { "type": "string" },
+        "oldKey": { "type": "string" },
+        "kind": { "enum": ["added", "removed", "changed"] },
+        "what": { "type": "string" },
+        "label": { "type": "string" },
+        "oldId": { "type": "string" },
+        "newId": { "type": "string" },
+        "properties": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "old", "new", "layout"],
+            "properties": { "name": { "type": "string" }, "old": { "type": "string" }, "new": { "type": "string" }, "layout": { "type": "boolean" } },
+            "additionalProperties": false
+          }
+        },
+        "described": { "type": "array", "items": { "type": "string" }, "description": "Every property, `guard: a() → b()`." },
+        "modelDescribed": { "type": "array", "items": { "type": "string" }, "description": "The model's properties only." },
+        "modelChange": { "type": "boolean", "description": "Whether it shows when layout changes are hidden." }
+      },
+      "additionalProperties": false
+    },
+    "converted": {
+      "type": "object",
+      "required": ["path", "modelText", "layoutText", "renames", "generated", "losses"],
+      "properties": {
+        "path": { "type": "string" },
+        "model": { "$ref": "#/$defs/model" },
+        "modelText": { "type": "string" },
+        "layoutText": { "type": "string" },
+        "renames": { "type": "array", "items": { "type": "string" } },
+        "generated": { "type": "integer" },
+        "losses": { "type": "array", "items": { "type": "string" } },
+        "error": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+
+    "functions": {
+      "version": { "args": { "type": "object" }, "result": { "type": "string" } },
+      "isOldFormat": { "args": { "$ref": "#/$defs/text" }, "result": { "type": "boolean" } },
+      "hasConflictMarkers": { "args": { "$ref": "#/$defs/text" }, "result": { "type": "boolean" } },
+      "read": {
+        "description": "A machine's two files: its model, the line of each element, what reading the layout gave; or the model file's problems.",
+        "args": { "$ref": "#/$defs/files" },
+        "result": {
+          "oneOf": [
+            {
+              "type": "object",
+              "required": ["model", "lines", "placed"],
+              "properties": {
+                "model": { "$ref": "#/$defs/model" },
+                "lines": { "$ref": "#/$defs/lines" },
+                "layoutProblem": { "type": "string" },
+                "placed": { "type": "integer", "description": "How many elements had no layout entry and were placed automatically." }
+              },
+              "additionalProperties": false
+            },
+            { "type": "object", "required": ["problems"], "properties": { "problems": { "type": "array", "items": { "$ref": "#/$defs/problem" } } }, "additionalProperties": false }
+          ]
+        }
+      },
+      "load": {
+        "description": "A model from a file in either format (an old one read as it is): its name, connection points and submachine files.",
+        "args": { "$ref": "#/$defs/files" },
+        "result": {
+          "oneOf": [
+            {
+              "type": "object",
+              "required": ["name", "points", "submachines", "old", "model"],
+              "properties": {
+                "name": { "type": "string" },
+                "points": { "type": "array", "items": { "$ref": "#/$defs/connectionPoint" } },
+                "submachines": { "type": "array", "items": { "type": "string" } },
+                "old": { "type": "boolean" },
+                "model": { "$ref": "#/$defs/model" }
+              },
+              "additionalProperties": false
+            },
+            { "type": "object", "required": ["error"], "properties": { "error": { "type": "string" } }, "additionalProperties": false }
+          ]
+        }
+      },
+      "write": {
+        "description": "A model written into its two files, generated names given and references resolved; or what the format can't hold. `model` is sent back only when writing changed it.",
+        "args": { "type": "object", "required": ["model"], "properties": { "model": { "$ref": "#/$defs/model" } }, "additionalProperties": false },
+        "result": {
+          "oneOf": [
+            {
+              "type": "object",
+              "required": ["modelText", "layoutText", "lines"],
+              "properties": {
+                "modelText": { "type": "string" },
+                "layoutText": { "type": "string" },
+                "lines": { "$ref": "#/$defs/lines" },
+                "model": { "$ref": "#/$defs/model" }
+              },
+              "additionalProperties": false
+            },
+            { "type": "object", "required": ["lost"], "properties": { "lost": { "type": "array", "items": { "type": "string" } } }, "additionalProperties": false }
+          ]
+        }
+      },
+      "derivedIds": {
+        "description": "The ids fsm-cli gives the model's elements (in problems and generated code's traces), by the model's own ids.",
+        "args": { "type": "object", "required": ["model"], "properties": { "model": { "$ref": "#/$defs/model" } }, "additionalProperties": false },
+        "result": { "type": "object", "additionalProperties": { "type": "string" } }
+      },
+      "convert": {
+        "description": "Old (XMI) files converted together, in the order given.",
+        "args": {
+          "type": "object",
+          "required": ["inputs"],
+          "properties": {
+            "inputs": {
+              "type": "array",
+              "items": { "type": "object", "required": ["path", "text"], "properties": { "path": { "type": "string" }, "text": { "type": "string" } }, "additionalProperties": false }
+            }
+          },
+          "additionalProperties": false
+        },
+        "result": { "type": "array", "items": { "$ref": "#/$defs/converted" } }
+      },
+      "validate": {
+        "args": {
+          "type": "object",
+          "required": ["model"],
+          "properties": { "model": { "$ref": "#/$defs/model" }, "submachines": { "type": "object", "additionalProperties": { "$ref": "#/$defs/submachineInfo" } } },
+          "additionalProperties": false
+        },
+        "result": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "severity", "message"],
+            "properties": { "id": { "type": "string" }, "severity": { "enum": ["error", "warning", "info"] }, "message": { "type": "string" } },
+            "additionalProperties": false
+          }
+        }
+      },
+      "checkText": {
+        "description": "A field's text checked, and normalized when valid. `triggers` and `events` are comma-separated lists.",
+        "args": {
+          "type": "object",
+          "required": ["kind", "text"],
+          "properties": {
+            "kind": { "enum": ["name", "event", "trigger", "guard", "actions", "condition", "triggers", "events"] },
+            "text": { "type": "string" },
+            "allowElse": { "type": "boolean", "description": "For a guard: on a transition leaving a choice or junction." }
+          },
+          "additionalProperties": false
+        },
+        "result": { "$ref": "#/$defs/check" }
+      },
+      "compare": {
+        "args": {
+          "type": "object",
+          "required": ["older", "newer"],
+          "properties": { "older": { "$ref": "#/$defs/model" }, "newer": { "$ref": "#/$defs/model" } },
+          "additionalProperties": false
+        },
+        "result": { "type": "array", "items": { "$ref": "#/$defs/change" } }
+      },
+      "splitConflicts": {
+        "args": { "$ref": "#/$defs/text" },
+        "result": {
+          "oneOf": [
+            {
+              "type": "object",
+              "required": ["current", "incoming", "conflicts"],
+              "properties": { "current": { "type": "string" }, "incoming": { "type": "string" }, "conflicts": { "type": "integer" } },
+              "additionalProperties": false
+            },
+            { "type": "object", "required": ["error"], "properties": { "error": { "type": "string" } }, "additionalProperties": false }
+          ]
+        }
+      },
+      "adopt": {
+        "description": "The result with one element (by its keys from `compare`: `key`, then `oldKey`) as `source` has it.",
+        "args": {
+          "type": "object",
+          "required": ["result", "source", "keys"],
+          "properties": { "result": { "$ref": "#/$defs/model" }, "source": { "$ref": "#/$defs/model" }, "keys": { "type": "array", "items": { "type": "string" } } },
+          "additionalProperties": false
+        },
+        "result": { "$ref": "#/$defs/model" }
+      },
+      "generate": {
+        "description": "Code generation: fsm-cli's WebAssembly request and response (its README, \"WebAssembly\").",
+        "args": {
+          "type": "object",
+          "required": ["files", "generate", "template", "templateName"],
+          "properties": {
+            "cwd": { "type": "string" },
+            "files": { "type": "object", "additionalProperties": { "type": "string" } },
+            "generate": { "type": "array", "items": { "type": "string" } },
+            "template": { "type": "string" },
+            "templateName": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+        "result": {
+          "type": "object",
+          "required": ["exitCode", "files", "issues", "error"],
+          "properties": {
+            "exitCode": { "type": "integer" },
+            "files": { "type": "array" },
+            "issues": { "type": "array" },
+            "error": { "type": ["string", "null"] }
+          }
+        }
+      }
+    }
+  }
+}

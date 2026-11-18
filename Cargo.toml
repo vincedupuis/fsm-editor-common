@@ -25,7 +25,7 @@ path = "src/main.rs"
 # a git tag once fsm-cli is released.
 fsm-cli = { path = "../fsm-cli" }
 serde = { version = "1.0.229", features = ["derive"] }
-serde_json = { version = "1.0.154", features = ["preserve_order"] }
+serde_json = { version = "1.0.154", features = ["preserve_order", "raw_value"] }
 
 [profile.release]
 lto = true
@@ -35,3 +35,6 @@ strip = true
 [profile.wasm]
 inherits = "release"
 opt-level = "s"
+
+[dev-dependencies]
+boon = "0.6.1"

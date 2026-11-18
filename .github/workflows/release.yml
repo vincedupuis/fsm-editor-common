@@ -1,0 +1,162 @@
+# On a version tag (v0.1.0), tests fsm-editor-common, builds it and attaches to the GitHub Release of that tag:
+# - per platform, fsm-editor-common-<version>-<platform>.tar.gz (.zip on Windows): the sidecar executable, which the
+#   Visual Studio and JetBrains editions run (`fsm-editor-common serve`);
+# - fsm-editor-common-<version>.wasm: the library as a WebAssembly module, which the VS Code edition runs;
+# - fsm-editor-common-templates-<version>.tar.gz: fsm-cli's bundled templates (templates/), of the version below;
+# - fsm-editor-common-schemas-<version>.tar.gz (schemas/): the model file's (fsm-cli's fsm.schema.json), the layout
+#   file's and the interface's (api.schema.json);
+# - fsm-editor-common-api-cases-<version>.tar.gz (api-cases/): requests and answers each edition replays.
+# fsm-cli is checked out beside this repo at FSM_CLI_VERSION (Cargo.toml uses it by path: ../fsm-cli).
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+env:
+  FSM_CLI_VERSION: 0.7.1
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          path: fsm-editor-common
+      - uses: actions/checkout@v7
+        with:
+          repository: vincedupuis/fsm-cli
+          ref: v${{ env.FSM_CLI_VERSION }}
+          path: fsm-cli
+
+      - name: Check the tag matches the package version
+        working-directory: fsm-editor-common
+        run: |
+          version=$(sed -nE 's/^version *= *"(.*)"/\1/p' Cargo.toml | head -n 1)
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "Tag $GITHUB_REF_NAME doesn't match the package version $version" >&2
+            exit 1
+          fi
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Test
+        working-directory: fsm-editor-common
+        run: cargo test --locked
+
+  build:
+    needs: test
+    strategy:
+      matrix:
+        # The Linux executables link against the runner's glibc: pinned to Ubuntu 24.04 (x64 and arm64 alike).
+        include:
+          - { platform: linux-x64, runner: ubuntu-24.04, target: x86_64-unknown-linux-gnu }
+          - { platform: linux-arm64, runner: ubuntu-24.04-arm, target: aarch64-unknown-linux-gnu }
+          - { platform: darwin-x64, runner: macos-latest, target: x86_64-apple-darwin }
+          - { platform: darwin-arm64, runner: macos-latest, target: aarch64-apple-darwin }
+          - { platform: windows-x64, runner: windows-latest, target: x86_64-pc-windows-msvc }
+    runs-on: ${{ matrix.runner }}
+    env:
+      # Links the C runtime statically, so the Windows executable doesn't need the VC++ redistributable.
+      CARGO_TARGET_X86_64_PC_WINDOWS_MSVC_RUSTFLAGS: -C target-feature=+crt-static
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          path: fsm-editor-common
+      - uses: actions/checkout@v7
+        with:
+          repository: vincedupuis/fsm-cli
+          ref: v${{ env.FSM_CLI_VERSION }}
+          path: fsm-cli
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Build
+        working-directory: fsm-editor-common
+        run: cargo build --release --locked --target ${{ matrix.target }}
+
+      - name: Package the executable
+        shell: bash
+        run: |
+          dir="fsm-editor-common-${GITHUB_REF_NAME#v}-${{ matrix.platform }}"
+          release="$GITHUB_WORKSPACE/fsm-editor-common/target/${{ matrix.target }}/release"
+          mkdir -p "$RUNNER_TEMP/$dir" "$RUNNER_TEMP/dist"
+          cd "$RUNNER_TEMP"
+          case "$dir" in
+            *-windows-*)
+              cp "$release/fsm-editor-common.exe" "$dir"
+              7z a -tzip "dist/$dir.zip" "$dir" > /dev/null ;;
+            *)
+              cp "$release/fsm-editor-common" "$dir"
+              tar czf "dist/$dir.tar.gz" "$dir" ;;
+          esac
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: ${{ matrix.platform }}
+          path: ${{ runner.temp }}/dist/*
+          if-no-files-found: error
+
+  wasm:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          path: fsm-editor-common
+      - uses: actions/checkout@v7
+        with:
+          repository: vincedupuis/fsm-cli
+          ref: v${{ env.FSM_CLI_VERSION }}
+          path: fsm-cli
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      # The crate type is given here: a library built as rlib and cdylib at once gets no LTO (see Cargo.toml).
+      - name: Build the WebAssembly module
+        working-directory: fsm-editor-common
+        run: cargo rustc --lib --crate-type cdylib --profile wasm --target wasm32-unknown-unknown --locked
+
+      - name: Package the module, the templates, the schemas and the interface's cases
+        run: |
+          version=${GITHUB_REF_NAME#v}
+          mkdir -p "$RUNNER_TEMP/dist" "$RUNNER_TEMP/schemas"
+          cp fsm-editor-common/target/wasm32-unknown-unknown/wasm/fsm_editor_common.wasm "$RUNNER_TEMP/dist/fsm-editor-common-$version.wasm"
+          tar czf "$RUNNER_TEMP/dist/fsm-editor-common-templates-$version.tar.gz" -C fsm-cli templates
+          cp fsm-cli/schemas/*.json fsm-editor-common/schemas/*.json "$RUNNER_TEMP/schemas"
+          tar czf "$RUNNER_TEMP/dist/fsm-editor-common-schemas-$version.tar.gz" -C "$RUNNER_TEMP" schemas
+          tar czf "$RUNNER_TEMP/dist/fsm-editor-common-api-cases-$version.tar.gz" -C fsm-editor-common api-cases
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: wasm
+          path: ${{ runner.temp }}/dist/*
+          if-no-files-found: error
+
+  release:
+    needs: [build, wasm]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          path: ${{ runner.temp }}/dist
+          merge-multiple: true
+
+      - name: Attach the builds to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          version=${GITHUB_REF_NAME#v}
+          assets=("$RUNNER_TEMP"/dist/*)
+          if gh release view "$GITHUB_REF_NAME" > /dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" "${assets[@]}" --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" "${assets[@]}" --title "fsm-editor-common $version" --generate-notes
+          fi

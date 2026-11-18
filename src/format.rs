@@ -818,12 +818,15 @@ impl Writer<'_> {
             let k = js_stringify(&Out::Obj(key.clone()));
             written.push((entry, key, k));
         }
+        let keep: Vec<bool> = (0..written.len())
+            .map(|i| written[i + 1..].iter().any(|(e, _, k2)| e.is_some() && *k2 == written[i].2))
+            .collect();
         let mut lo = Vec::new();
-        for (i, (entry, key, k)) in written.iter().enumerate() {
+        for ((entry, key, _), keep) in written.into_iter().zip(keep) {
             if let Some(e) = entry {
-                lo.push(Out::Obj(e.clone()));
-            } else if written.iter().enumerate().any(|(j, (e, _, k2))| j > i && e.is_some() && k2 == k) {
-                lo.push(Out::Obj(key.clone()));
+                lo.push(Out::Obj(e));
+            } else if keep {
+                lo.push(Out::Obj(key));
             }
         }
         if !mo.is_empty() {

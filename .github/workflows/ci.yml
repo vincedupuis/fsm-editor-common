@@ -1,0 +1,35 @@
+# Tests fsm-editor-common on each push and pull request, with fsm-cli checked out beside it at the version pinned
+# by FSM_CLI_VERSION in release.yml (Cargo.toml uses it by path: ../fsm-cli).
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          path: fsm-editor-common
+
+      - name: Read the fsm-cli pin
+        run: echo "FSM_CLI_VERSION=$(sed -nE 's/^ *FSM_CLI_VERSION: *([^ ]+).*/\1/p' fsm-editor-common/.github/workflows/release.yml)" >> "$GITHUB_ENV"
+
+      - uses: actions/checkout@v7
+        with:
+          repository: vincedupuis/fsm-cli
+          ref: v${{ env.FSM_CLI_VERSION }}
+          path: fsm-cli
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+
+      - name: Test
+        working-directory: fsm-editor-common
+        run: |
+          cargo test --locked
+          cargo clippy --all-targets --locked -- -D warnings
