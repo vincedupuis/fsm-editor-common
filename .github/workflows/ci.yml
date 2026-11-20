@@ -16,7 +16,9 @@ jobs:
           path: fsm-editor-common
 
       - name: Read the fsm-cli pin
-        run: echo "FSM_CLI_VERSION=$(sed -nE 's/^ *FSM_CLI_VERSION: *([^ ]+).*/\1/p' fsm-editor-common/.github/workflows/release.yml)" >> "$GITHUB_ENV"
+        # A block scalar: the pattern's ": " would make a plain one a mapping.
+        run: |
+          echo "FSM_CLI_VERSION=$(sed -nE 's/^ *FSM_CLI_VERSION: *([^ ]+).*/\1/p' fsm-editor-common/.github/workflows/release.yml)" >> "$GITHUB_ENV"
 
       - uses: actions/checkout@v7
         with:
