@@ -1,3 +1,3 @@
-line 1: Missing field 'format' in the machine.
+line 1: Missing field 'version' in the machine.
 line 1: Missing field 'name' in the machine.
 line 1: Missing field 'type' in the machine.

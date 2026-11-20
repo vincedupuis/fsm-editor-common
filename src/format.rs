@@ -1154,11 +1154,11 @@ pub fn write_machine(model: &FsmModel) -> Written {
         outgoing,
     };
     let mut mo = Obj::new();
-    mo.num("format", 1.0);
+    mo.num("version", 1.0);
     mo.str("name", &model.name);
     mo.str("type", if model.kind == MachineKind::Protocol { "protocol" } else { "behavioral" });
     let mut lo = Obj::new();
-    lo.num("format", 1.0);
+    lo.num("version", 1.0);
     if truthy(&model.documentation) {
         mo.str("documentation", s(&model.documentation));
     }
@@ -1452,7 +1452,8 @@ impl LayoutShape {
             }
         }
         for r in required {
-            if !fields.iter().any(|f| f.key == *r) {
+            if !fields.iter().any(|f| r.split('|').any(|k| f.key == k)) {
+                let r = r.split('|').next().unwrap_or(r);
                 self.add(node.line, format!("Missing field '{r}' in {what}."));
             }
         }
@@ -1593,12 +1594,13 @@ pub fn layout_shape_problem(root: &Node) -> Option<String> {
     s.check(
         root,
         "the layout",
-        &["$schema", "format", "points", "regions", "initial", "history", "deepHistory", "elements"],
-        &["format"],
+        &["$schema", "version", "format", "points", "regions", "initial", "history", "deepHistory", "elements"],
+        &["version|format"],
         &mut |s, f| {
-            if f.key == "format" {
+            // `format`: the field's name before `version`, read the same way, never written.
+            if f.key == "version" || f.key == "format" {
                 if f.value.number() != Some(1.0) {
-                    s.add(f.value.line, "Field 'format' must be 1.".into());
+                    s.add(f.value.line, format!("Field '{}' must be 1.", f.key));
                 }
             } else if f.key == "$schema" {
                 if f.value.str().is_none() {

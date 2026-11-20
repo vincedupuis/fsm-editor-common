@@ -1,5 +1,5 @@
 {
-  "format": 1,
+  "version": 1,
   "initial": { "x": 20, "y": 40 },
   "elements": [
     {

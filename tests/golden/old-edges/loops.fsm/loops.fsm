@@ -1,5 +1,5 @@
 {
-  "format": 1,
+  "version": 1,
   "name": "Loops",
   "type": "behavioral",
   "initial": { "target": "A" },

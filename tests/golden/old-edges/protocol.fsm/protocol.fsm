@@ -1,5 +1,5 @@
 {
-  "format": 1,
+  "version": 1,
   "name": "Door",
   "type": "protocol",
   "documentation": "A door & its \"lock\" <protocol>.\nSecond line.",

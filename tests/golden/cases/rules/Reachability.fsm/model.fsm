@@ -1,5 +1,5 @@
 {
-  "format": 1,
+  "version": 1,
   "name": "Reachability",
   "type": "behavioral",
   "elements": [

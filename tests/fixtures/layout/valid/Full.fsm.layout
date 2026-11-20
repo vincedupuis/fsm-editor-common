@@ -1,6 +1,6 @@
 {
   "$schema": "x",
-  "format": 1,
+  "version": 1,
   "points": [
     {
       "name": "p",

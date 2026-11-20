@@ -12,7 +12,7 @@ Nothing here reads or writes a file: every function takes texts and models, and 
 ## Requests
 
 ```jsonc
-→ {"id": 1, "fn": "read", "args": {"model": "{ \"format\": 1, … }", "layout": "{ … }"}}
+→ {"id": 1, "fn": "read", "args": {"model": "{ \"version\": 1, … }", "layout": "{ … }"}}
 ← {"id": 1, "result": {"model": {…}, "lines": {"Idle": 7, …}, "placed": 0}}
 → {"id": 2, "fn": "checkText", "args": {"kind": "guard", "text": "a()&&b()"}}
 ← {"id": 2, "result": {"ok": true, "value": "a() && b()"}}
