@@ -14,7 +14,7 @@ on:
     tags: ['v*']
 
 env:
-  FSM_CLI_VERSION: 0.7.1
+  FSM_CLI_VERSION: 0.7.2
 
 jobs:
   test:
