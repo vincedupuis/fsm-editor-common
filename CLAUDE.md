@@ -1,6 +1,6 @@
 # fsm-editor-common
 
-The file half of FSM Editor's three editions, in Rust (README.md): reading and writing a machine's two files, converting old XMI files, validation, the grammar's checks, comparing and merging, code generation. The VS Code edition runs it as WebAssembly, the Visual Studio and JetBrains editions as a sidecar process (`fsm-editor-common serve`, JSON lines). The editions keep their UI, geometry and editing; they send their model (the VS Code edition's `FsmModel` as JSON) and get texts and models back.
+The file services of FSM Editor's three editions, in Rust (README.md): reading and writing a machine's two files, converting old XMI files, validation, the grammar's checks, comparing and merging, code generation. The VS Code edition runs it as WebAssembly, the Visual Studio and JetBrains editions as a sidecar process (`fsm-editor-common serve`, JSON lines). The editions keep their UI, geometry and editing; they send their model (the VS Code edition's `FsmModel` as JSON) and get texts and models back.
 
 ## Commands
 

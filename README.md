@@ -1,6 +1,6 @@
 # fsm-editor-common
 
-The file half of FSM Editor's three editions (VS Code, Visual Studio, JetBrains), written once in Rust: reading and writing a state machine's two files (`X.fsm`, the model, and `X.fsm.layout`, the drawing), converting the XMI files of earlier versions, validation, the text grammar's checks, comparing and merging two versions, and code generation. The `.fsm` format, its reader, validator, grammar and the code generator are [fsm-cli](https://github.com/vincedupuis/fsm-cli)'s, used as a library; the layout file's format is this repo's (`schemas/fsm-layout.schema.json`).
+The file services of FSM Editor's three editions (VS Code, Visual Studio, JetBrains), written once in Rust: reading and writing a state machine's two files (`X.fsm`, the model, and `X.fsm.layout`, the drawing), converting the XMI files of earlier versions, validation, the text grammar's checks, comparing and merging two versions, and code generation. The `.fsm` format, its reader, validator, grammar and the code generator are [fsm-cli](https://github.com/vincedupuis/fsm-cli)'s, used as a library; the layout file's format is this repo's (`schemas/fsm-layout.schema.json`).
 
 Nothing here reads or writes a file: every function takes texts and models, and gives texts and models.
 
