@@ -287,9 +287,21 @@ pub fn items_of(model: &FsmModel) -> Vec<Item> {
         ix.keys.insert(id, k);
     }
     let t_by_id: HashMap<&str, &Transition> = model.transitions.iter().map(|t| (t.id.as_str(), t)).collect();
+    let region_names: HashMap<&str, &str> = model
+        .regions
+        .iter()
+        .chain(model.vertices.iter().flat_map(|v| v.regions.iter()))
+        .map(|r| (r.id.as_str(), r.name.as_str()))
+        .collect();
     let anchor_of = |a: &str| -> String {
+        if a == crate::format::MACHINE_ANCHOR {
+            return model.name.clone();
+        }
         if ix.v.contains_key(a) {
             return ix.ref_of(a);
+        }
+        if let Some(name) = region_names.get(a) {
+            return name.to_string();
         }
         let Some(t) = t_by_id.get(a) else {
             return a.strip_prefix([UNRESOLVED, UNRESOLVED_ANCHOR]).unwrap_or(a).to_string();
@@ -308,6 +320,7 @@ pub fn items_of(model: &FsmModel) -> Vec<Item> {
     let mut machine = Props::default();
     machine.set("name", model.name.clone());
     machine.set("type", if model.kind == MachineKind::Protocol { "protocol" } else { "behavioral" }.into());
+    machine.set("context", s(&model.context).to_string());
     machine.set("documentation", s(&model.documentation).to_string());
     items.push(Item {
         key: "machine".into(),
@@ -337,7 +350,7 @@ pub fn items_of(model: &FsmModel) -> Vec<Item> {
             m.set("submachine", s(&v.submachine).into());
             m.set(
                 "regions",
-                if v.regions.len() > 1 {
+                if v.regions.len() > 1 || v.regions.iter().any(|r| !r.name.is_empty()) {
                     v.regions
                         .iter()
                         .map(|r| if shown(&r.name).is_empty() { "(unnamed)" } else { shown(&r.name) })

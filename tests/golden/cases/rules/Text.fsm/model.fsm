@@ -2,6 +2,7 @@
   "version": 1,
   "name": "Text",
   "type": "behavioral",
+  "context": "Door 1",
   "initial": { "target": "A", "action": "init(" },
   "elements": [
     {

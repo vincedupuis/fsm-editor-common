@@ -26,6 +26,9 @@ use crate::out::{Obj, Out, js_parse, js_stringify, plain, write_json};
 
 pub const UNRESOLVED: char = '\u{e001}';
 pub const UNRESOLVED_ANCHOR: char = '\u{e002}';
+/// A comment's anchor to the machine itself, in the editors' model (the machine has no id of its own); the file names
+/// it by the machine's name.
+pub const MACHINE_ANCHOR: &str = "";
 
 /// The reference of a target that names nothing ('' for an `initial` without `target`), or None.
 pub fn unresolved(target: &str) -> Option<&str> {
@@ -189,9 +192,7 @@ impl<'a> Builder<'a> {
             let Some(f) = node.get(key) else { continue };
             let pk = format!("{owner}.{key}");
             let vid = self.alloc(&pk);
-            if key != "initial" && !self.pseudo.contains_key(&pk) {
-                self.pseudo.insert(pk, vid.clone());
-            }
+            self.pseudo.entry(pk).or_insert_with(|| vid.clone());
             self.lines.insert(vid.clone(), f.line);
             self.model.vertices.push(Vertex::new(&vid, vtype, "", id));
             let x = &f.value;
@@ -291,7 +292,7 @@ impl<'a> Builder<'a> {
             None => self.by_name.get(reference),
             Some(dot) => {
                 let rest = &reference[dot + 1..];
-                if rest == "history" || rest == "deepHistory" {
+                if rest == "initial" || rest == "history" || rest == "deepHistory" {
                     self.pseudo.get(reference)
                 } else {
                     self.points.get(reference)
@@ -305,13 +306,20 @@ impl<'a> Builder<'a> {
     /// trigger and target, then by order among identical ones). One that names nothing is kept: UNRESOLVED followed
     /// by the reference, UNRESOLVED_ANCHOR followed by the object as JSON.
     fn resolve_anchors(&mut self) {
-        let vertex_ids: HashSet<String> = self.model.vertices.iter().map(|v| v.id.clone()).collect();
+        // A comment can be attached to an element, a region or the machine (by its name).
+        let mut vertex_ids: HashSet<String> = self.model.vertices.iter().map(|v| v.id.clone()).collect();
+        vertex_ids.extend(self.model.regions.iter().map(|r| r.id.clone()));
+        vertex_ids.extend(self.model.vertices.iter().flat_map(|v| v.regions.iter().map(|r| r.id.clone())));
         let anchors = std::mem::take(&mut self.anchors);
         for (vi, nodes) in anchors {
             let mut used: HashSet<usize> = HashSet::new();
             let mut out = Vec::new();
             for a in nodes {
                 if let Some(r) = a.str() {
+                    if r == self.model.name && !r.is_empty() {
+                        out.push(MACHINE_ANCHOR.to_string());
+                        continue;
+                    }
                     let id = self.resolve(r);
                     out.push(if vertex_ids.contains(&id) { id } else { format!("{UNRESOLVED}{r}") });
                     continue;
@@ -351,6 +359,7 @@ pub fn read_model(source: &str) -> Result<ReadMachine, Vec<Problem>> {
     let name = text(&root, "name");
     let mut model = FsmModel::new(&name);
     model.kind = if text(&root, "type") == "protocol" { MachineKind::Protocol } else { MachineKind::Behavioral };
+    model.context = Some(text(&root, "context"));
     model.documentation = Some(text(&root, "documentation"));
     let mut b = Builder {
         model,
@@ -473,23 +482,20 @@ impl Index {
         matches!(v.vtype, VertexType::EntryPoint | VertexType::ExitPoint) && self.top.contains(&v.parent)
     }
 
-    /// The owner of a region's history pseudostates in references: its state, the region when there are several,
-    /// the machine.
+    /// The owner of a region's initial and history pseudostates in references: the region when it is named (an item
+    /// of `regions`: always, when there are several), else its state, or the machine.
     fn region_ref_owner(&self, region_id: &str) -> String {
         let r = self.regions.get(region_id);
-        let rname = || r.map(|r| r.name.clone()).unwrap_or_default();
+        let several = match self.region_owner.get(region_id) {
+            Some(Some(o)) => self.m.vertices[*o].regions.len() > 1,
+            _ => self.m.regions.len() > 1,
+        };
+        if several || r.is_some_and(|r| !r.name.is_empty()) {
+            return r.map(|r| r.name.clone()).unwrap_or_default();
+        }
         match self.region_owner.get(region_id) {
-            Some(Some(o)) => {
-                let owner = &self.m.vertices[*o];
-                if owner.regions.len() > 1 { rname() } else { owner.name.clone() }
-            }
-            _ => {
-                if self.m.regions.len() > 1 {
-                    rname()
-                } else {
-                    self.m.name.clone()
-                }
-            }
+            Some(Some(o)) => self.m.vertices[*o].name.clone(),
+            _ => self.m.name.clone(),
         }
     }
 
@@ -498,18 +504,21 @@ impl Index {
         if v.vtype == VertexType::ConnectionPointRef { s(&v.point_ref).to_string() } else { v.name.clone() }
     }
 
-    /// The reference to a vertex, or None when it can't be referenced (an initial pseudostate).
+    /// The reference to a vertex.
     pub fn reference(&self, id: &str) -> Option<String> {
         if let Some(u) = unresolved(id) {
             return Some(u.to_string());
         }
         let Some(v) = self.vertex(id) else { return Some(id.to_string()) };
         match v.vtype {
-            VertexType::Initial => None,
-            VertexType::ShallowHistory | VertexType::DeepHistory => Some(format!(
+            VertexType::Initial | VertexType::ShallowHistory | VertexType::DeepHistory => Some(format!(
                 "{}.{}",
                 self.region_ref_owner(&v.parent),
-                if v.vtype == VertexType::ShallowHistory { "history" } else { "deepHistory" }
+                match v.vtype {
+                    VertexType::Initial => "initial",
+                    VertexType::ShallowHistory => "history",
+                    _ => "deepHistory",
+                }
             )),
             _ if self.is_border(v) => Some(format!(
                 "{}.{}",
@@ -567,11 +576,18 @@ impl Index {
                 None => Anchor::Null,
             };
         }
+        if a == MACHINE_ANCHOR {
+            return Anchor::Out(Out::Str(self.m.name.clone()));
+        }
         if self.v.contains_key(a) {
             return match self.reference(a) {
                 Some(r) => Anchor::Out(Out::Str(r)),
                 None => Anchor::Undefined,
             };
+        }
+        // A region, by its name (one anchored is given a name when it has none: `assign_names`).
+        if let Some(r) = self.regions.get(a) {
+            return if r.name.is_empty() { Anchor::Null } else { Anchor::Out(Out::Str(r.name.clone())) };
         }
         let Some(&ti) = self.t.get(a) else { return Anchor::Null };
         let t = &self.m.transitions[ti];
@@ -1002,7 +1018,8 @@ impl Writer<'_> {
     }
 
     fn regions_of(&mut self, owner: Option<usize>, regions: &[Region], o: &mut Obj, l: &mut Obj) {
-        if regions.len() == 1 {
+        // A single region without a name is written as its owner's fields; a named one in `regions`.
+        if regions.len() == 1 && regions[0].name.is_empty() {
             self.region_fields(&regions[0], owner, o, l);
             return;
         }
@@ -1013,7 +1030,9 @@ impl Writer<'_> {
             ro.str("name", &r.name);
             let mut rl = Obj::new();
             rl.str("name", &r.name);
+            // A region's size is its extent beside the others: a single region has none.
             if owner.is_some()
+                && regions.len() > 1
                 && let Some(size) = r.size
                 && finite(size)
                 && n1(size) > 0.0
@@ -1159,6 +1178,9 @@ pub fn write_machine(model: &FsmModel) -> Written {
     mo.str("type", if model.kind == MachineKind::Protocol { "protocol" } else { "behavioral" });
     let mut lo = Obj::new();
     lo.num("version", 1.0);
+    if truthy(&model.context) {
+        mo.str("context", s(&model.context));
+    }
     if truthy(&model.documentation) {
         mo.str("documentation", s(&model.documentation));
     }
@@ -1247,7 +1269,7 @@ fn set_name(m: &mut FsmModel, n: Named, name: String) {
 }
 
 /// `s.trim().replace(/\s+/g, '_').replace(/[*.]/g, '_')`.
-fn clean_name(s: &str) -> String {
+pub(crate) fn clean_name(s: &str) -> String {
     let mut out = String::new();
     let mut space = false;
     for c in js_trim(s).chars() {
@@ -1284,9 +1306,12 @@ pub fn assign_names(model: &mut FsmModel, fix: bool) -> Vec<Rename> {
     }
     model.name = machine.clone();
     taken.insert(machine);
-    // The named things in document order: regions of an owner with several, elements.
+    // The named things in document order: regions of an owner with several, a single region with a name or a comment
+    // attached to it (which needs a name to reference it), elements.
+    let anchored: HashSet<String> = model.vertices.iter().flat_map(|v| v.anchors.iter().flatten().cloned()).collect();
+    let single = |r: &Region| !r.name.is_empty() || anchored.contains(&r.id);
     let mut named: Vec<(Named, String, &'static str)> = Vec::new();
-    if model.regions.len() >= 2 {
+    if model.regions.len() >= 2 || (model.regions.len() == 1 && single(&model.regions[0])) {
         for i in 0..model.regions.len() {
             named.push((Named::MachineRegion(i), format!("region {} of the state machine", i + 1), "region"));
         }
@@ -1296,7 +1321,7 @@ pub fn assign_names(model: &mut FsmModel, fix: bool) -> Vec<Rename> {
             continue;
         }
         named.push((Named::Vertex(vi), label(v.vtype).to_string(), generated_prefix(v.vtype)));
-        if v.vtype == VertexType::State && v.regions.len() >= 2 {
+        if v.vtype == VertexType::State && (v.regions.len() >= 2 || (v.regions.len() == 1 && single(&v.regions[0]))) {
             let owner = if v.name.is_empty() { "a state".to_string() } else { format!("'{}'", v.name) };
             for ri in 0..v.regions.len() {
                 named.push((Named::VertexRegion(vi, ri), format!("region {} of {owner}", ri + 1), "region"));
@@ -1372,7 +1397,7 @@ pub fn assign_names(model: &mut FsmModel, fix: bool) -> Vec<Rename> {
             let old = model.vertices[p].name.clone();
             let vtype = model.vertices[p].vtype;
             let mut name = clean(&old);
-            if fix && (name == "history" || name == "deepHistory") {
+            if fix && (name == "initial" || name == "history" || name == "deepHistory") {
                 name.push('2');
             }
             if !name.is_empty() && !seen.contains(&name) {
@@ -1760,9 +1785,7 @@ impl<'a> Layout<'a> {
             let items = e.get("regions").and_then(|f| f.value.items());
             if regs.len() == 1 && items.is_none() {
                 self.apply_region(&regs[0], e);
-            } else if regs.len() > 1
-                && let Some(items) = items
-            {
+            } else if let Some(items) = items {
                 for item in items {
                     let iname = get_str(item, "name");
                     let Some(ri) = self.model.vertices[vi].regions.iter().position(|x| Some(x.name.as_str()) == iname)
@@ -1835,9 +1858,7 @@ pub fn apply_layout(model: &mut FsmModel, layout_text: Option<&str>) -> LayoutRe
         let top: Vec<Region> = l.model.regions.clone();
         if top.len() == 1 && items.is_none() {
             l.apply_region(&top[0].id, root);
-        } else if top.len() > 1
-            && let Some(items) = items
-        {
+        } else if let Some(items) = items {
             for item in items {
                 if let Some(r) = top.iter().find(|x| Some(x.name.as_str()) == get_str(item, "name")) {
                     l.apply_region(&r.id, item);

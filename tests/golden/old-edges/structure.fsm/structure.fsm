@@ -20,7 +20,8 @@
       "type": "comment",
       "text": "hello\nworld",
       "anchors": [
-        "S"
+        "S",
+        { "source": "Structure.initial", "target": "S" }
       ]
     },
     {
@@ -38,14 +39,14 @@
           "name": "entry1*",
           "type": "entryPoint",
           "transitions": [
-            { "type": "external", "target": "S2" }
+            { "type": "local", "target": "S2" }
           ]
         },
         {
           "name": "entry2*",
           "type": "entryPoint",
           "transitions": [
-            { "type": "external", "target": "S2" }
+            { "type": "local", "target": "S2" }
           ]
         }
       ]
@@ -132,14 +133,14 @@
           "name": "entry1*",
           "type": "entryPoint",
           "transitions": [
-            { "type": "external", "target": "S2" }
+            { "type": "local", "target": "S2" }
           ]
         },
         {
           "name": "entry2*",
           "type": "entryPoint",
           "transitions": [
-            { "type": "external", "target": "S2" }
+            { "type": "local", "target": "S2" }
           ]
         }
       ]

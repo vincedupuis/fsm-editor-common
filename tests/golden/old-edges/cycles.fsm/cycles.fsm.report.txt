@@ -1,5 +1,7 @@
 error -
 generated 4
+rename the transitions leaving entry point 'ep' are now local
+rename the transitions leaving entry point 'mep' are now local
 loss the size of the initial pseudostate (40 × 30): it is drawn at its default size, around the same center
 loss the size of the choice 'c1' (40 × 30): it is drawn at its default size, around the same center
 loss the size of the choice 'c2' (40 × 30): it is drawn at its default size, around the same center

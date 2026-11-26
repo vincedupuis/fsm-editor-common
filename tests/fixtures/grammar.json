@@ -653,13 +653,16 @@
         "error": "'after(0ms)' is not a valid name: use letters, digits and _ only, not starting with a digit."
       },
       "trigger": {
-        "ok": false,
-        "error": "The time of an after() trigger must be greater than zero."
+        "ok": true,
+        "value": "after(0ms)"
       },
       "ms": 0,
       "triggers": {
-        "ok": false,
-        "error": "The time of an after() trigger must be greater than zero."
+        "ok": true,
+        "value": [
+          "after(0ms)",
+          "after(1h)"
+        ]
       }
     },
     {

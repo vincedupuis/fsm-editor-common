@@ -1,0 +1,85 @@
+{
+  "version": 1,
+  "name": "Segments",
+  "type": "behavioral",
+  "initial": { "target": "fork1*" },
+  "elements": [
+    {
+      "name": "fork1*",
+      "type": "fork",
+      "transitions": [
+        { "type": "external", "target": "choice1*" },
+        { "type": "external", "target": "Y" }
+      ]
+    },
+    {
+      "name": "choice1*",
+      "type": "choice",
+      "transitions": [
+        { "type": "external", "target": "X" }
+      ]
+    },
+    {
+      "name": "C",
+      "type": "state",
+      "points": [
+        {
+          "name": "in",
+          "type": "entryPoint",
+          "transitions": [
+            { "type": "local", "guard": "g()", "target": "X" },
+            { "type": "local", "target": "X2" }
+          ]
+        }
+      ],
+      "regions": [
+        {
+          "name": "r1",
+          "elements": [
+            {
+              "name": "X",
+              "type": "state",
+              "transitions": [
+                { "type": "external", "target": "junction1*" }
+              ]
+            },
+            { "name": "X2", "type": "state" },
+            {
+              "name": "junction1*",
+              "type": "junction",
+              "transitions": [
+                { "type": "external", "target": "join1*" }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "r2",
+          "elements": [
+            {
+              "name": "Y",
+              "type": "state",
+              "transitions": [
+                { "type": "external", "target": "join1*" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "join1*",
+      "type": "join",
+      "transitions": [
+        { "type": "external", "target": "Z" }
+      ]
+    },
+    {
+      "name": "Z",
+      "type": "state",
+      "transitions": [
+        { "type": "external", "trigger": "go", "target": "C.in" }
+      ]
+    }
+  ]
+}

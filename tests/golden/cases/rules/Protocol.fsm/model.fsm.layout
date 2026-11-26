@@ -1,5 +1,12 @@
 {
   "version": 1,
+  "points": [
+    {
+      "name": "open",
+      "x": 902,
+      "y": 40
+    }
+  ],
   "initial": { "x": 40, "y": 40 },
   "elements": [
     {
@@ -13,8 +20,36 @@
       "name": "B",
       "x": 280,
       "y": 40,
-      "width": 140,
-      "height": 60
+      "width": 316,
+      "height": 130,
+      "initial": { "x": 30, "y": 50 },
+      "history": { "x": 90, "y": 50 },
+      "elements": [
+        {
+          "name": "C",
+          "x": 156,
+          "y": 50,
+          "width": 140,
+          "height": 60
+        }
+      ]
+    },
+    {
+      "name": "choice1*",
+      "x": 636,
+      "y": 40
+    },
+    {
+      "name": "fork1*",
+      "x": 704,
+      "y": 40,
+      "width": 90,
+      "height": 8
+    },
+    {
+      "name": "choice2*",
+      "x": 834,
+      "y": 40
     }
   ]
 }

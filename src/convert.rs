@@ -10,7 +10,7 @@ use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 
 use crate::format::{assign_names, default_size, resizable, write_machine};
-use crate::model::{FsmModel, VertexType, is_color};
+use crate::model::{FsmModel, TransitionKind, VertexType, is_color};
 use crate::paths::{decode_href, dirname, join_path};
 use crate::xmi::{XmiModel, from_xmi};
 
@@ -84,18 +84,34 @@ pub fn convert_group(inputs: &[ConvertInput]) -> Vec<Converted> {
     for (path, m) in read.iter_mut() {
         let losses = old_only(m);
         let unnamed = count_unnamed(&m.model);
-        let renames = assign_names(&mut m.model, true)
-            .into_iter()
-            .map(|r| {
-                format!(
-                    "{} '{}' is now '{}'{}",
-                    r.what,
-                    r.from,
-                    r.to,
-                    r.why.map(|w| format!(" ({w})")).unwrap_or_default()
-                )
-            })
+        let mut renames: Vec<String> = Vec::new();
+        // The context becomes a name, as the element names do.
+        let context = crate::format::clean_name(&m.context);
+        if context != m.context {
+            renames.push(format!("the context '{}' of the state machine is now '{context}'", m.context));
+        }
+        m.model.context = Some(context);
+        renames.extend(assign_names(&mut m.model, true).into_iter().map(|r| {
+            format!("{} '{}' is now '{}'{}", r.what, r.from, r.to, r.why.map(|w| format!(" ({w})")).unwrap_or_default())
+        }));
+        // UML makes a transition leaving an entry point local: earlier versions wrote them external.
+        let points: Vec<(String, String)> = m
+            .model
+            .vertices
+            .iter()
+            .filter(|v| v.vtype == VertexType::EntryPoint)
+            .map(|v| (v.id.clone(), v.name.clone()))
             .collect();
+        for (id, name) in points {
+            let mut changed = false;
+            for t in m.model.transitions.iter_mut().filter(|t| t.source == id && t.kind == TransitionKind::External) {
+                t.kind = TransitionKind::Local;
+                changed = true;
+            }
+            if changed {
+                renames.push(format!("the transitions leaving entry point '{name}' are now local"));
+            }
+        }
         named.insert(path.clone(), (renames, unnamed, losses));
     }
     for k in 0..read.len() {
@@ -208,12 +224,6 @@ fn js_num(n: f64) -> String {
 fn old_only(x: &mut XmiModel) -> Vec<String> {
     let mut out = Vec::new();
     let m = &mut x.model;
-    if !x.context.is_empty() {
-        out.push(format!("the context '{}' of the state machine", x.context));
-    }
-    if m.regions.len() == 1 && !m.regions[0].name.is_empty() {
-        out.push(format!("the name '{}' of the state machine's region", m.regions[0].name));
-    }
     for v in m.vertices.iter_mut() {
         let describe = format!(
             "the {}{}",
@@ -221,9 +231,6 @@ fn old_only(x: &mut XmiModel) -> Vec<String> {
             if v.name.is_empty() { String::new() } else { format!(" '{}'", v.name) }
         );
         let pseudo = matches!(v.vtype, VertexType::Initial | VertexType::ShallowHistory | VertexType::DeepHistory);
-        if v.vtype == VertexType::State && v.regions.len() == 1 && !v.regions[0].name.is_empty() {
-            out.push(format!("the name '{}' of the region of state '{}'", v.regions[0].name, v.name));
-        }
         if pseudo && !v.name.is_empty() {
             out.push(format!("the name of {describe}"));
         }

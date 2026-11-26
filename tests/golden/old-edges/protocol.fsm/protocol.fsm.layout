@@ -1,34 +1,39 @@
 {
   "version": 1,
-  "initial": { "x": 0, "y": 0 },
-  "elements": [
+  "regions": [
     {
-      "name": "Open",
-      "x": 0,
-      "y": 0,
-      "width": 140,
-      "height": 60
-    },
-    {
-      "name": "Closed",
-      "x": 300,
-      "y": 0,
-      "width": 140,
-      "height": 60,
-      "transitions": [
+      "name": "main",
+      "initial": { "x": 0, "y": 0 },
+      "elements": [
         {
-          "trigger": "lock, after(1.5s)",
-          "target": "Locked",
-          "label": { "x": 0, "y": 0 }
+          "name": "Open",
+          "x": 0,
+          "y": 0,
+          "width": 140,
+          "height": 60
+        },
+        {
+          "name": "Closed",
+          "x": 300,
+          "y": 0,
+          "width": 140,
+          "height": 60,
+          "transitions": [
+            {
+              "trigger": "lock, after(1.5s)",
+              "target": "Locked",
+              "label": { "x": 0, "y": 0 }
+            }
+          ]
+        },
+        {
+          "name": "Locked",
+          "x": 300,
+          "y": 200,
+          "width": 140,
+          "height": 60
         }
       ]
-    },
-    {
-      "name": "Locked",
-      "x": 300,
-      "y": 200,
-      "width": 140,
-      "height": 60
     }
   ]
 }

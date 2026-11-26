@@ -1,4 +1,4 @@
-line 5: Unknown field 'context' in the machine.
+line 5: Unknown field 'owner' in the machine.
 line 13: Unknown field 'gaurd' in a transition.
 line 17: Unknown field 'colour' in a state.
 line 22: Unknown field 'entry' in a choice.

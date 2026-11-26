@@ -360,6 +360,7 @@ pub fn adopt(result: &FsmModel, source: &FsmModel, keys: &[String]) -> FsmModel 
     if key == "machine" {
         r.name = source.name.clone();
         r.kind = source.kind;
+        r.context = source.context.clone();
         r.documentation = source.documentation.clone();
         normalize_model(&mut r);
         return r;

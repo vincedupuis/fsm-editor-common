@@ -1,20 +1,47 @@
 {
   "version": 1,
-  "initial": { "x": 40, "y": 40 },
-  "elements": [
+  "regions": [
     {
-      "name": "A",
-      "x": 100,
-      "y": 40,
-      "width": 140,
-      "height": 60
-    },
-    {
-      "name": "B",
-      "x": 280,
-      "y": 40,
-      "width": 140,
-      "height": 60
+      "name": "main",
+      "initial": { "x": 40, "y": 40 },
+      "elements": [
+        {
+          "name": "note1*",
+          "x": 100,
+          "y": 40,
+          "width": 160,
+          "height": 64
+        },
+        {
+          "name": "A",
+          "x": 300,
+          "y": 40,
+          "width": 250,
+          "height": 130,
+          "regions": [
+            {
+              "name": "inner",
+              "initial": { "x": 30, "y": 50 },
+              "elements": [
+                {
+                  "name": "A1",
+                  "x": 90,
+                  "y": 50,
+                  "width": 140,
+                  "height": 60
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "B",
+          "x": 590,
+          "y": 40,
+          "width": 140,
+          "height": 60
+        }
+      ]
     }
   ]
 }

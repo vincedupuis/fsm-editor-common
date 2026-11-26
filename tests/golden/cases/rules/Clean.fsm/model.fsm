@@ -2,20 +2,47 @@
   "version": 1,
   "name": "Clean",
   "type": "behavioral",
-  "initial": { "target": "A" },
-  "elements": [
+  "regions": [
     {
-      "name": "A",
-      "type": "state",
-      "transitions": [
-        { "type": "external", "trigger": "go", "target": "B" }
-      ]
-    },
-    {
-      "name": "B",
-      "type": "state",
-      "transitions": [
-        { "type": "external", "trigger": "back", "guard": "ok()", "action": "log()", "target": "A" }
+      "name": "main",
+      "initial": { "target": "A" },
+      "elements": [
+        {
+          "name": "note1*",
+          "type": "comment",
+          "text": "Attached to the machine, a region, an initial pseudostate and its transition.",
+          "anchors": [
+            "Clean",
+            "main",
+            "inner.initial",
+            { "source": "inner.initial", "target": "A1" }
+          ]
+        },
+        {
+          "name": "A",
+          "type": "state",
+          "transitions": [
+            { "type": "external", "trigger": "go", "target": "B" },
+            { "type": "external", "trigger": "after(0s)", "target": "B" }
+          ],
+          "regions": [
+            {
+              "name": "inner",
+              "initial": { "target": "A1" },
+              "elements": [
+                { "name": "A1", "type": "state" }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "B",
+          "type": "state",
+          "transitions": [
+            { "type": "external", "trigger": "back", "guard": "ok()", "action": "log()", "target": "A" },
+            { "type": "external", "trigger": "all", "target": "B" }
+          ]
+        }
       ]
     }
   ]

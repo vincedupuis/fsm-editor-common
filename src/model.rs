@@ -325,6 +325,9 @@ pub struct FsmModel {
     pub name: String,
     #[serde(default)]
     pub kind: MachineKind,
+    /// The name of the classifier the machine belongs to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub context: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub documentation: Option<String>,
     #[serde(default)]
@@ -341,6 +344,7 @@ impl FsmModel {
             version: 1,
             name: name.to_string(),
             kind: MachineKind::Behavioral,
+            context: None,
             documentation: None,
             regions: Vec::new(),
             vertices: Vec::new(),

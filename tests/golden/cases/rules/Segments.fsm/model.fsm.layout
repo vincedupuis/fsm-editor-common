@@ -1,0 +1,84 @@
+{
+  "version": 1,
+  "initial": { "x": 40, "y": 40 },
+  "elements": [
+    {
+      "name": "fork1*",
+      "x": 100,
+      "y": 40,
+      "width": 90,
+      "height": 8
+    },
+    {
+      "name": "choice1*",
+      "x": 230,
+      "y": 40
+    },
+    {
+      "name": "C",
+      "x": 298,
+      "y": 40,
+      "width": 424,
+      "height": 210,
+      "points": [
+        {
+          "name": "in",
+          "x": -8,
+          "y": 10
+        }
+      ],
+      "regions": [
+        {
+          "name": "r1",
+          "elements": [
+            {
+              "name": "X",
+              "x": 30,
+              "y": 50,
+              "width": 140,
+              "height": 60
+            },
+            {
+              "name": "X2",
+              "x": 210,
+              "y": 50,
+              "width": 140,
+              "height": 60
+            },
+            {
+              "name": "junction1*",
+              "x": 390,
+              "y": 50
+            }
+          ]
+        },
+        {
+          "name": "r2",
+          "elements": [
+            {
+              "name": "Y",
+              "x": 30,
+              "y": 130,
+              "width": 140,
+              "height": 60
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "join1*",
+      "x": 762,
+      "y": 40,
+      "width": 90,
+      "height": 8
+    },
+    {
+      "name": "Z",
+      "x": 892,
+      "y": 40,
+      "width": 140,
+      "height": 60
+    }
+  ]
+}

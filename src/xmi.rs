@@ -36,7 +36,7 @@ pub struct XmiModel {
     pub model: FsmModel,
     /// xmi:id of the state machine, which hrefs to it name (`Payment.fsm#sm`).
     pub xmi_id: String,
-    /// Name of the context classifier, which the JSON format doesn't hold.
+    /// Name of the context classifier, as the old file has it (`model.context` holds it as a name).
     pub context: String,
 }
 
@@ -569,5 +569,7 @@ pub fn from_xmi(text: &str) -> Result<XmiModel, String> {
         }
     }
     normalize_model(&mut model);
-    Ok(XmiModel { model, xmi_id, context: context.and_then(|c| c.attr("name")).unwrap_or("").to_string() })
+    let context = context.and_then(|c| c.attr("name")).unwrap_or("").to_string();
+    model.context = Some(context.clone());
+    Ok(XmiModel { model, xmi_id, context })
 }

@@ -61,6 +61,7 @@ pub fn to_cli_model(m: &FsmModel) -> cli::FsmModel {
     cli::FsmModel {
         name: m.name.clone(),
         kind: if m.kind == MachineKind::Protocol { cli::MachineKind::Protocol } else { cli::MachineKind::Behavioral },
+        context: s(&m.context).to_string(),
         documentation: s(&m.documentation).to_string(),
         regions: m.regions.iter().map(|r| cli::Region::new(&r.id, &r.name)).collect(),
         vertices: m

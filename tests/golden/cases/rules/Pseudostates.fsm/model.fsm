@@ -44,7 +44,8 @@
       "type": "junction",
       "transitions": [
         { "type": "external", "guard": "else", "target": "A" },
-        { "type": "external", "guard": "b()", "target": "A" }
+        { "type": "external", "guard": "b()", "target": "A" },
+        { "type": "external", "guard": "else", "target": "A" }
       ]
     },
     {

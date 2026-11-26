@@ -2,6 +2,7 @@
   "version": 1,
   "name": "MediaPlayer",
   "type": "behavioral",
+  "context": "MediaPlayer",
   "documentation": "Example UML state machine: composite and orthogonal states, deep history, choice, exit point and an internal transition.",
   "initial": { "target": "Off" },
   "elements": [

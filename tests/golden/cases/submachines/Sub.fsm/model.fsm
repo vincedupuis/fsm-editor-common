@@ -7,7 +7,7 @@
       "name": "again",
       "type": "entryPoint",
       "transitions": [
-        { "type": "external", "target": "Work" }
+        { "type": "local", "target": "Work" }
       ]
     },
     { "name": "done", "type": "exitPoint" },

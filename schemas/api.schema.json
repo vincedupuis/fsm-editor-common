@@ -111,6 +111,7 @@
         "version": { "const": 1 },
         "name": { "type": "string" },
         "kind": { "enum": ["behavioral", "protocol"] },
+        "context": { "type": "string" },
         "documentation": { "type": "string" },
         "regions": { "type": "array", "items": { "$ref": "#/$defs/region" } },
         "vertices": { "type": "array", "items": { "$ref": "#/$defs/vertex" } },
