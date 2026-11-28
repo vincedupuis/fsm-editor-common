@@ -1,0 +1,106 @@
+{
+  "version": 1,
+  "name": "Entries",
+  "type": "behavioral",
+  "initial": { "target": "A" },
+  "elements": [
+    {
+      "name": "A",
+      "type": "state",
+      "transitions": [
+        { "type": "external", "trigger": "a", "target": "forkPartial" },
+        { "type": "external", "trigger": "b", "target": "O.in" },
+        { "type": "external", "trigger": "c", "target": "X1" },
+        { "type": "external", "trigger": "d", "target": "H.history" },
+        { "type": "external", "trigger": "e", "target": "Hs.history" },
+        { "type": "external", "trigger": "f", "target": "O" },
+        { "type": "external", "trigger": "g", "target": "L" }
+      ]
+    },
+    {
+      "name": "forkPartial",
+      "type": "fork",
+      "transitions": [
+        { "type": "external", "target": "X1" },
+        { "type": "external", "target": "Y1" }
+      ]
+    },
+    {
+      "name": "O",
+      "type": "state",
+      "points": [
+        {
+          "name": "in",
+          "type": "entryPoint",
+          "transitions": [
+            { "type": "local", "target": "X1" }
+          ]
+        }
+      ],
+      "regions": [
+        {
+          "name": "r1",
+          "initial": { "target": "X1" },
+          "elements": [
+            { "name": "X1", "type": "state" }
+          ]
+        },
+        {
+          "name": "r2",
+          "elements": [
+            { "name": "Y1", "type": "state" }
+          ]
+        },
+        {
+          "name": "r3",
+          "elements": [
+            { "name": "Z1", "type": "state" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "H",
+      "type": "state",
+      "history": {},
+      "elements": [
+        { "name": "H1", "type": "state" }
+      ]
+    },
+    {
+      "name": "Hs",
+      "type": "state",
+      "history": { "target": "Inner" },
+      "elements": [
+        {
+          "name": "Inner",
+          "type": "state",
+          "elements": [
+            { "name": "Deep", "type": "state" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "L",
+      "type": "state",
+      "transitions": [
+        { "type": "local", "trigger": "again", "target": "L" },
+        { "type": "external", "trigger": "quit", "target": "L.out" }
+      ],
+      "points": [
+        { "name": "out", "type": "exitPoint" }
+      ],
+      "initial": { "target": "L1" },
+      "elements": [
+        {
+          "name": "L1",
+          "type": "state",
+          "transitions": [
+            { "type": "external", "trigger": "bye", "target": "L.out" }
+          ]
+        }
+      ]
+    }
+  ]
+}

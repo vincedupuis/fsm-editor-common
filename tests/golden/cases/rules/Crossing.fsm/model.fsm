@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "name": "Crossing",
+  "type": "behavioral",
+  "regions": [
+    {
+      "name": "left",
+      "initial": { "target": "A" },
+      "elements": [
+        {
+          "name": "A",
+          "type": "state",
+          "transitions": [
+            { "type": "external", "trigger": "go", "target": "B" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "right",
+      "initial": { "target": "B" },
+      "elements": [
+        { "name": "B", "type": "state" }
+      ]
+    }
+  ]
+}

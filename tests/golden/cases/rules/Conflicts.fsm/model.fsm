@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "name": "Conflicts",
+  "type": "behavioral",
+  "initial": { "target": "A" },
+  "elements": [
+    {
+      "name": "A",
+      "type": "state",
+      "transitions": [
+        { "type": "external", "trigger": "e", "target": "B" },
+        { "type": "external", "trigger": "e", "target": "C" },
+        { "type": "external", "trigger": "after(1s)", "target": "B" },
+        { "type": "external", "trigger": "after(1000ms)", "target": "C" },
+        { "type": "external", "trigger": "f", "target": "O" },
+        { "type": "external", "trigger": "g", "guard": "ok()", "target": "C" },
+        { "type": "external", "trigger": "g", "target": "B" }
+      ]
+    },
+    {
+      "name": "B",
+      "type": "state",
+      "transitions": [
+        { "type": "external", "target": "C" },
+        { "type": "external", "target": "A" }
+      ]
+    },
+    { "name": "C", "type": "state" },
+    {
+      "name": "O",
+      "type": "state",
+      "transitions": [
+        { "type": "external", "trigger": "leave", "target": "A" }
+      ],
+      "regions": [
+        {
+          "name": "r1",
+          "initial": { "target": "P" },
+          "elements": [
+            {
+              "name": "P",
+              "type": "state",
+              "transitions": [
+                { "type": "external", "trigger": "leave", "target": "A" },
+                { "type": "external", "trigger": "cross", "target": "Q" },
+                { "type": "external", "trigger": "both", "guard": "ok()", "target": "A" }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "r2",
+          "initial": { "target": "Q" },
+          "elements": [
+            {
+              "name": "Q",
+              "type": "state",
+              "transitions": [
+                { "type": "external", "trigger": "leave", "target": "B" },
+                { "type": "external", "trigger": "both", "target": "B" }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "name": "ProtocolContext",
+  "type": "protocol",
+  "initial": { "target": "Closed" },
+  "elements": [
+    {
+      "name": "Closed",
+      "type": "state",
+      "transitions": [
+        { "type": "external", "trigger": "open", "precondition": "in(Closed)", "target": "Open" }
+      ]
+    },
+    {
+      "name": "Open",
+      "type": "state",
+      "transitions": [
+        { "type": "external", "trigger": "close", "target": "Closed" }
+      ]
+    }
+  ]
+}

@@ -19,6 +19,9 @@ pub struct SubmachineInfo {
     pub file: Option<String>,
     #[serde(default)]
     pub points: Vec<ConnectionPointInfo>,
+    /// It can be started by default (an initial pseudostate in every top-level region); unknown counts as true.
+    #[serde(default, rename = "defaultEntry", skip_serializing_if = "Option::is_none")]
+    pub default_entry: Option<bool>,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize)]
@@ -125,6 +128,7 @@ pub fn validate(model: &FsmModel, submachines: &HashMap<String, SubmachineInfo>)
                             kind: point_kind(p.kind),
                         })
                         .collect(),
+                    default_entry: i.default_entry.unwrap_or(true),
                 },
             )
         })

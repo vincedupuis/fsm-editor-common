@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "regions": [
+    {
+      "name": "left",
+      "initial": { "x": 40, "y": 40 },
+      "elements": [
+        {
+          "name": "A",
+          "x": 100,
+          "y": 40,
+          "width": 140,
+          "height": 60
+        }
+      ]
+    },
+    {
+      "name": "right",
+      "initial": { "x": 40, "y": 40 },
+      "elements": [
+        {
+          "name": "B",
+          "x": 100,
+          "y": 40,
+          "width": 140,
+          "height": 60
+        }
+      ]
+    }
+  ]
+}

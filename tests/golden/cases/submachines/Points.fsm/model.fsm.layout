@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "points": [
+    {
+      "name": "in",
+      "x": 220,
+      "y": 40
+    }
+  ],
+  "regions": [
+    {
+      "name": "r1",
+      "elements": [
+        {
+          "name": "A",
+          "x": 40,
+          "y": 40,
+          "width": 140,
+          "height": 60
+        }
+      ]
+    },
+    {
+      "name": "r2",
+      "elements": [
+        {
+          "name": "B",
+          "x": 40,
+          "y": 40,
+          "width": 140,
+          "height": 60
+        }
+      ]
+    }
+  ]
+}

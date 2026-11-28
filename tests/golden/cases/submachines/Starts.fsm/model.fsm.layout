@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "initial": { "x": 40, "y": 40 },
+  "elements": [
+    {
+      "name": "X",
+      "x": 100,
+      "y": 40,
+      "width": 140,
+      "height": 60
+    },
+    {
+      "name": "P",
+      "x": 280,
+      "y": 40,
+      "width": 140,
+      "height": 60,
+      "points": [
+        {
+          "name": "in",
+          "x": -8,
+          "y": 10
+        }
+      ]
+    }
+  ]
+}

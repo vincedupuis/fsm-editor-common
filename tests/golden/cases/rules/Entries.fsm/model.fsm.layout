@@ -1,0 +1,140 @@
+{
+  "version": 1,
+  "initial": { "x": 40, "y": 40 },
+  "elements": [
+    {
+      "name": "A",
+      "x": 100,
+      "y": 40,
+      "width": 140,
+      "height": 60
+    },
+    {
+      "name": "forkPartial",
+      "x": 280,
+      "y": 40,
+      "width": 90,
+      "height": 8
+    },
+    {
+      "name": "O",
+      "x": 410,
+      "y": 40,
+      "width": 250,
+      "height": 290,
+      "points": [
+        {
+          "name": "in",
+          "x": -8,
+          "y": 10
+        }
+      ],
+      "regions": [
+        {
+          "name": "r1",
+          "initial": { "x": 30, "y": 50 },
+          "elements": [
+            {
+              "name": "X1",
+              "x": 90,
+              "y": 50,
+              "width": 140,
+              "height": 60
+            }
+          ]
+        },
+        {
+          "name": "r2",
+          "elements": [
+            {
+              "name": "Y1",
+              "x": 30,
+              "y": 130,
+              "width": 140,
+              "height": 60
+            }
+          ]
+        },
+        {
+          "name": "r3",
+          "elements": [
+            {
+              "name": "Z1",
+              "x": 30,
+              "y": 210,
+              "width": 140,
+              "height": 60
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "H",
+      "x": 700,
+      "y": 40,
+      "width": 256,
+      "height": 130,
+      "history": { "x": 30, "y": 50 },
+      "elements": [
+        {
+          "name": "H1",
+          "x": 96,
+          "y": 50,
+          "width": 140,
+          "height": 60
+        }
+      ]
+    },
+    {
+      "name": "Hs",
+      "x": 996,
+      "y": 40,
+      "width": 306,
+      "height": 200,
+      "history": { "x": 30, "y": 50 },
+      "elements": [
+        {
+          "name": "Inner",
+          "x": 96,
+          "y": 50,
+          "width": 190,
+          "height": 130,
+          "elements": [
+            {
+              "name": "Deep",
+              "x": 30,
+              "y": 50,
+              "width": 140,
+              "height": 60
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "L",
+      "x": 1342,
+      "y": 40,
+      "width": 250,
+      "height": 130,
+      "points": [
+        {
+          "name": "out",
+          "x": 242,
+          "y": 10
+        }
+      ],
+      "initial": { "x": 30, "y": 50 },
+      "elements": [
+        {
+          "name": "L1",
+          "x": 90,
+          "y": 50,
+          "width": 140,
+          "height": 60
+        }
+      ]
+    }
+  ]
+}

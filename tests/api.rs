@@ -71,6 +71,12 @@ fn requests() -> Vec<Value> {
             "Payment.fsm": { "found": true, "name": pay["name"], "points": pay["points"] }
         } }),
         ),
+        req(
+            "validate",
+            json!({ "model": order_model, "submachines": {
+            "Payment.fsm": { "found": true, "name": pay["name"], "points": pay["points"], "defaultEntry": false }
+        } }),
+        ),
         req("validate", json!({ "model": order_model })),
         req("checkText", json!({ "kind": "guard", "text": "a()&&!(b()||c())" })),
         req("checkText", json!({ "kind": "guard", "text": "else", "allowElse": true })),

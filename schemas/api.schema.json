@@ -131,7 +131,8 @@
         "found": { "type": "boolean" },
         "name": { "type": "string" },
         "file": { "type": "string" },
-        "points": { "type": "array", "items": { "$ref": "#/$defs/connectionPoint" } }
+        "points": { "type": "array", "items": { "$ref": "#/$defs/connectionPoint" } },
+        "defaultEntry": { "type": "boolean", "description": "The machine can be started by default: an initial pseudostate in every top-level region (load's defaultEntry). Left out, it counts as true." }
       },
       "additionalProperties": false
     },
@@ -224,10 +225,11 @@
           "oneOf": [
             {
               "type": "object",
-              "required": ["name", "points", "submachines", "old", "model"],
+              "required": ["name", "points", "defaultEntry", "submachines", "old", "model"],
               "properties": {
                 "name": { "type": "string" },
                 "points": { "type": "array", "items": { "$ref": "#/$defs/connectionPoint" } },
+                "defaultEntry": { "type": "boolean", "description": "Every top-level region has an initial pseudostate: the machine can be started by default." },
                 "submachines": { "type": "array", "items": { "type": "string" } },
                 "old": { "type": "boolean" },
                 "model": { "$ref": "#/$defs/model" }

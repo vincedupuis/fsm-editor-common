@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "initial": { "x": 40, "y": 40 },
+  "elements": [
+    {
+      "name": "A",
+      "x": 100,
+      "y": 40,
+      "width": 140,
+      "height": 60
+    },
+    {
+      "name": "noElse",
+      "x": 280,
+      "y": 40
+    },
+    {
+      "name": "oneGuarded",
+      "x": 348,
+      "y": 40
+    },
+    {
+      "name": "oneUnguarded",
+      "x": 416,
+      "y": 40
+    },
+    {
+      "name": "junctionNoElse",
+      "x": 484,
+      "y": 40
+    },
+    {
+      "name": "merge",
+      "x": 538,
+      "y": 40
+    },
+    {
+      "name": "B",
+      "x": 592,
+      "y": 40,
+      "width": 140,
+      "height": 60
+    },
+    {
+      "name": "C",
+      "x": 772,
+      "y": 40,
+      "width": 140,
+      "height": 60
+    }
+  ]
+}

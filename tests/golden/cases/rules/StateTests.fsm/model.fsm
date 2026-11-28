@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "name": "StateTests",
+  "type": "behavioral",
+  "initial": { "target": "A" },
+  "elements": [
+    {
+      "name": "A",
+      "type": "state",
+      "invariant": "!in(Missing)",
+      "transitions": [
+        { "type": "external", "trigger": "e", "guard": "in(B) && !in(Nowhere)", "target": "B" },
+        { "type": "external", "trigger": "f", "guard": "in()", "target": "B" }
+      ]
+    },
+    { "name": "B", "type": "state" }
+  ]
+}

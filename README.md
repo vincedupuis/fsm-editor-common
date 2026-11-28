@@ -25,7 +25,7 @@ Nothing here reads or writes a file: every function takes texts and models, and 
 | Function | Arguments | Result |
 | --- | --- | --- |
 | `read` | `model`, `layout` texts | the editors' model (ids, absolute places), each element's line, the layout's problem; or the model file's problems |
-| `load` | a file's text, either format | its model (an old file read as it is), name, connection points, submachine files |
+| `load` | a file's text, either format | its model (an old file read as it is), name, connection points, whether it can be started by default (`defaultEntry`), submachine files |
 | `write` | `model` | both files' texts and each element's line (the model back when writing changed it); or what the format can't hold |
 | `derivedIds` | `model` | the ids fsm-cli gives its elements (in problems and generated code's traces), by the model's ids |
 | `convert` | old files (`path`, `text`) | the new files, renames and losses, per file |

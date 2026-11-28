@@ -1,0 +1,58 @@
+{
+  "version": 1,
+  "name": "Choices",
+  "type": "behavioral",
+  "initial": { "target": "A" },
+  "elements": [
+    {
+      "name": "A",
+      "type": "state",
+      "transitions": [
+        { "type": "external", "trigger": "a", "target": "noElse" },
+        { "type": "external", "trigger": "b", "target": "oneGuarded" },
+        { "type": "external", "trigger": "c", "target": "oneUnguarded" },
+        { "type": "external", "trigger": "d", "target": "junctionNoElse" },
+        { "type": "external", "trigger": "e", "target": "merge" }
+      ]
+    },
+    {
+      "name": "noElse",
+      "type": "choice",
+      "transitions": [
+        { "type": "external", "guard": "x()", "target": "B" },
+        { "type": "external", "guard": "y()", "target": "C" }
+      ]
+    },
+    {
+      "name": "oneGuarded",
+      "type": "choice",
+      "transitions": [
+        { "type": "external", "guard": "x()", "target": "B" }
+      ]
+    },
+    {
+      "name": "oneUnguarded",
+      "type": "choice",
+      "transitions": [
+        { "type": "external", "target": "B" }
+      ]
+    },
+    {
+      "name": "junctionNoElse",
+      "type": "junction",
+      "transitions": [
+        { "type": "external", "guard": "x()", "target": "B" },
+        { "type": "external", "guard": "y()", "target": "C" }
+      ]
+    },
+    {
+      "name": "merge",
+      "type": "junction",
+      "transitions": [
+        { "type": "external", "target": "C" }
+      ]
+    },
+    { "name": "B", "type": "state" },
+    { "name": "C", "type": "state" }
+  ]
+}

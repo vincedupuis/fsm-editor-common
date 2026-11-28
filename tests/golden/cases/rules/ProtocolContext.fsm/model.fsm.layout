@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "initial": { "x": 40, "y": 40 },
+  "elements": [
+    {
+      "name": "Closed",
+      "x": 100,
+      "y": 40,
+      "width": 140,
+      "height": 60
+    },
+    {
+      "name": "Open",
+      "x": 280,
+      "y": 40,
+      "width": 140,
+      "height": 60
+    }
+  ]
+}

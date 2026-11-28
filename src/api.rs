@@ -193,6 +193,7 @@ fn run(function: &str, a: Args) -> Result<String, String> {
                 Ok((model, old)) => json!({
                     "name": model.name,
                     "points": machine_connection_points(&model),
+                    "defaultEntry": fsm_cli::model::has_default_entry(&crate::validate::to_cli_model(&model)),
                     "submachines": submachine_files(&model, old),
                     "old": old,
                     "model": model,

@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "name": "Points",
+  "type": "behavioral",
+  "points": [
+    {
+      "name": "in",
+      "type": "entryPoint",
+      "transitions": [
+        { "type": "local", "target": "A" }
+      ]
+    }
+  ],
+  "regions": [
+    {
+      "name": "r1",
+      "elements": [
+        { "name": "A", "type": "state" }
+      ]
+    },
+    {
+      "name": "r2",
+      "elements": [
+        { "name": "B", "type": "state" }
+      ]
+    }
+  ]
+}

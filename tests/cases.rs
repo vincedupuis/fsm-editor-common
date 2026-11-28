@@ -49,6 +49,9 @@ fn fsm_cli_cases() {
                                 name: Some(m.model.name.clone()),
                                 file: None,
                                 points: machine_connection_points(&m.model),
+                                default_entry: Some(fsm_cli::model::has_default_entry(
+                                    &fsm_editor_common::validate::to_cli_model(&m.model),
+                                )),
                             },
                             _ => SubmachineInfo::default(),
                         };
